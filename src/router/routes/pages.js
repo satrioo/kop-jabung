@@ -37,4 +37,19 @@ export default [
       ],
     },
   },
+
+  {
+    path: '/disposisi/proses-disposisi',
+    name: 'proses-disposisi',
+    component: () => import('@/views/pages/Disposisi/proses.vue'),
+    meta: {
+      pageTitle: 'Proses Disposisi',
+      breadcrumb: [
+        {
+          text: 'Proses Disposisi',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

@@ -75,6 +75,15 @@
             @include vertical-menu-has-sub-arrow($font-size-base + 0.1);
           }
         }
+        .navbar-header{
+          height: 6.45rem;
+          .navbar-brand{
+            margin-top: unset;
+            .brand-logo img {
+              max-width: 180px;
+            }
+          }
+        }
       }
       //Content expanded
       .footer {
@@ -138,6 +147,9 @@
               }
             }
           }
+          .top-text{
+            display: none;
+          }
         }
 
         // When menu is collapsed but mouse is hovered over menu
@@ -156,8 +168,16 @@
               @include vertical-menu-has-sub-arrow(1rem);
             }
           }
-          .navbar-header .brand-text {
-            display: inline;
+          .navbar-header {
+            .navbar-brand{
+              margin-top: unset;
+              .brand-logo img {
+                max-width: 180px;
+              }
+            }
+            .brand-text {
+              display: inline;
+            }
           }
           .modern-nav-toggle {
             display: block;

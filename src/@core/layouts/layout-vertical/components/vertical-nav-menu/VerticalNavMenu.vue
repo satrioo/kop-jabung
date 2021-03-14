@@ -26,13 +26,13 @@
             >
               <span class="brand-logo">
                 <b-img
-                  :src="appLogoImage"
+                  :src="require('@/assets/images/logo/logo-kop.png')"
                   alt="logo"
                 />
               </span>
-              <h2 class="brand-text">
+              <!-- <h2 class="brand-text">
                 {{ appName }}
-              </h2>
+              </h2> -->
             </b-link>
           </li>
 
@@ -63,7 +63,9 @@
       :class="{'d-block': shallShadowBottom}"
       class="shadow-bottom"
     />
-
+    <p class="top-text">
+      Sistem Administrasi Perkantoran
+    </p>
     <!-- main menu content-->
     <vue-perfect-scrollbar
       :settings="perfectScrollbarSettings"
@@ -159,4 +161,30 @@ export default {
 
 <style lang="scss">
 @import "~@core/scss/base/core/menu/menu-types/vertical-menu.scss";
+.main-menu {
+  .navbar-header{
+    height: 6.45rem;
+    // .navbar-brand{
+    //   margin-top: unset;
+    //   .brand-logo img {
+    //     max-width: 180px;
+    //   }
+    // }
+    .navbar-nav{
+      .nav-item{
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  .top-text{
+    display: flex;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: #86868c;
+    margin-bottom: -5px;
+  }
+
+}
 </style>

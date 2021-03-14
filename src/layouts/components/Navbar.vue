@@ -18,7 +18,9 @@
 
     <!-- Left Col -->
     <div class="bookmark-wrapper align-items-center flex-grow-1 d-none d-lg-flex">
-      <dark-Toggler class="d-none d-lg-block" />
+      <dark-Toggler
+        class="d-none lalala d-lg-block "
+      />
     </div>
 
     <b-navbar-nav class="nav align-items-center ml-auto">
@@ -121,3 +123,18 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" >
+.navbar-container{
+  background: linear-gradient(to right, #00427A, #1361A3);
+  border-radius: 15px;
+  .nav-item{
+    color: #fff;
+    a, div{
+      color: #fff;
+    }
+  }
+
+}
+
+</style>
