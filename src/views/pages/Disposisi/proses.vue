@@ -1,19 +1,21 @@
 <template>
   <b-card-code title="Daftar Proses Disposisi">
-
-    <b-button
-      v-ripple.400="'rgba(113, 102, 240, 0.15)'"
-      variant="outline-primary"
-      class="bg-gradient-primary"
-      style="position: absolute; right: 20px; top: 15px;"
+    <b-link
+      to="/disposisi/tambah-disposisi"
     >
-      <feather-icon
-        icon="PlusIcon"
-        class="mr-50"
-      />
-      <span class="align-middle">Tambah</span>
-    </b-button>
-
+      <b-button
+        v-ripple.400="'rgba(113, 102, 240, 0.15)'"
+        variant="outline-primary"
+        class="bg-gradient-primary"
+        style="position: absolute; right: 20px; top: 15px;"
+      >
+        <feather-icon
+          icon="PlusIcon"
+          class="mr-50"
+        />
+        <span class="align-middle">Tambah</span>
+      </b-button>
+    </b-link>
     <!-- search input -->
     <div class="custom-search d-flex justify-content-end">
       <b-form-group>
@@ -90,7 +92,7 @@
                   class="text-body align-middle mr-25"
                 />
               </template>
-              <b-dropdown-item>
+              <b-dropdown-item @click="editDisposisi">
                 <feather-icon
                   icon="Edit2Icon"
                   class="mr-50"
@@ -170,10 +172,11 @@
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
   BAvatar, BBadge, BPagination, BFormGroup, BFormInput, BFormSelect, BDropdown, BDropdownItem,
-  BButton,
+  BButton, BLink,
 } from 'bootstrap-vue'
 import { VueGoodTable } from 'vue-good-table'
 
@@ -182,6 +185,7 @@ import { VueGoodTable } from 'vue-good-table'
 
 export default {
   components: {
+    BLink,
     BCardCode,
     VueGoodTable,
     BAvatar,
@@ -276,20 +280,15 @@ export default {
 
       return status => statusColor[status]
     },
-    // direction() {
-    //   if (store.state.appConfig.isRTL) {
-    //     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-    //     this.dir = true
-    //     return this.dir
-    //   }
-    //   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-    //   this.dir = false
-    //   return this.dir
-    // },
   },
   created() {
     this.$http.get('/good-table/basic')
       .then(res => { this.rows = res.data })
+  },
+  methods: {
+    editDisposisi() {
+      window.location.href = `edit-disposisi/${this.pageLength}`
+    },
   },
 }
 </script>

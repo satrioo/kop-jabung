@@ -10,12 +10,7 @@ export default [
       },
       {
         title: 'Selesai',
-        route: 'dashboard-analytics',
-      },
-      {
-        title: 'Second Page',
-        route: 'second-page',
-        icon: 'FileIcon',
+        route: 'selesai',
       },
     ],
   },
@@ -80,5 +75,10 @@ export default [
     title: 'Home',
     route: 'home',
     icon: 'HomeIcon',
+  },
+  {
+    title: 'Second Page',
+    route: 'second-page',
+    icon: 'FileIcon',
   },
 ]

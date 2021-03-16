@@ -41,12 +41,55 @@ export default [
   {
     path: '/disposisi/proses-disposisi',
     name: 'proses-disposisi',
-    component: () => import('@/views/pages/Disposisi/proses.vue'),
+    component: () => import('@/views/pages/Disposisi/Proses.vue'),
     meta: {
       pageTitle: 'Proses Disposisi',
       breadcrumb: [
         {
           text: 'Proses Disposisi',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/disposisi/tambah-disposisi',
+    name: 'tambah-disposisi',
+    component: () => import('@/views/pages/Disposisi/AddDisposisi.vue'),
+    meta: {
+      pageTitle: 'Tambah Disposisi',
+      breadcrumb: [
+        {
+          text: 'Tambah Disposisi',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    // eslint-disable-next-line no-undef
+    path: '/disposisi/edit-disposisi/:id',
+    name: 'tambah-disposisi',
+    component: () => import('@/views/pages/Disposisi/EditDisposisi.vue'),
+    meta: {
+      pageTitle: 'Tambah Disposisi',
+      breadcrumb: [
+        {
+          text: 'Tambah Disposisi',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/disposisi/selesai',
+    name: 'selesai',
+    component: () => import('@/views/pages/Disposisi/Selesai.vue'),
+    meta: {
+      pageTitle: 'Selesai',
+      breadcrumb: [
+        {
+          text: 'Selesai',
           active: true,
         },
       ],
