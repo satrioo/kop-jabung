@@ -38,8 +38,8 @@
           class="px-xl-2 mx-auto"
         >
           <b-card-title
+            class="mb-1 font-weight-bold"
             title-tag="h2"
-            class="font-weight-bold mb-1"
           >
             Welcome to Vuexy! 👋
           </b-card-title>
@@ -47,11 +47,35 @@
             Please sign-in to your account and start the adventure
           </b-card-text>
 
+          <b-alert
+            variant="primary"
+            show
+          >
+            <div class="alert-body font-small-2">
+              <p>
+                <small class="mr-50"><span class="font-weight-bold">Admin:</span> admin@demo.com | admin</small>
+              </p>
+              <p>
+                <small class="mr-50"><span class="font-weight-bold">Client:</span> client@demo.com | client</small>
+              </p>
+            </div>
+            <feather-icon
+              v-b-tooltip.hover.left="'This is just for ACL demo purpose'"
+              icon="HelpCircleIcon"
+              size="18"
+              class="position-absolute"
+              style="top: 10; right: 10;"
+            />
+          </b-alert>
+
           <!-- form -->
-          <validation-observer ref="loginValidation">
+          <validation-observer
+            ref="loginForm"
+            #default="{invalid}"
+          >
             <b-form
               class="auth-login-form mt-2"
-              @submit.prevent
+              @submit.prevent="login"
             >
               <!-- email -->
               <b-form-group
@@ -61,6 +85,7 @@
                 <validation-provider
                   #default="{ errors }"
                   name="Email"
+                  vid="email"
                   rules="required|email"
                 >
                   <b-form-input
@@ -78,13 +103,14 @@
               <b-form-group>
                 <div class="d-flex justify-content-between">
                   <label for="login-password">Password</label>
-                  <b-link :to="{name:'auth-forgot-password-v2'}">
+                  <!-- <b-link :to="{name:'auth-forgot-password'}">
                     <small>Forgot Password?</small>
-                  </b-link>
+                  </b-link> -->
                 </div>
                 <validation-provider
                   #default="{ errors }"
                   name="Password"
+                  vid="password"
                   rules="required"
                 >
                   <b-input-group
@@ -98,7 +124,7 @@
                       class="form-control-merge"
                       :type="passwordFieldType"
                       name="login-password"
-                      placeholder="············"
+                      placeholder="Password"
                     />
                     <b-input-group-append is-text>
                       <feather-icon
@@ -128,7 +154,7 @@
                 type="submit"
                 variant="primary"
                 block
-                @click="validationForm"
+                :disabled="invalid"
               >
                 Sign in
               </b-button>
@@ -137,7 +163,7 @@
 
           <b-card-text class="text-center mt-2">
             <span>New on our platform? </span>
-            <b-link :to="{name:'page-auth-register-v2'}">
+            <b-link :to="{name:'auth-register'}">
               <span>&nbsp;Create an account</span>
             </b-link>
           </b-card-text>
@@ -178,24 +204,32 @@
           </div>
         </b-col>
       </b-col>
-      <!-- /Login-->
+    <!-- /Login-->
     </b-row>
   </div>
 </template>
 
 <script>
 /* eslint-disable global-require */
+/* eslint-disable no-unused-vars */
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {
-  BRow, BCol, BLink, BFormGroup, BFormInput, BInputGroupAppend, BInputGroup, BFormCheckbox, BCardText, BCardTitle, BImg, BForm, BButton,
+  BRow, BCol, BLink, BFormGroup, BFormInput, BInputGroupAppend, BInputGroup, BFormCheckbox, BCardText, BCardTitle, BImg, BForm, BButton, BAlert, VBTooltip,
 } from 'bootstrap-vue'
+import useJwt from '@/auth/jwt/useJwt'
 import { required, email } from '@validations'
 import { togglePasswordVisibility } from '@core/mixins/ui/forms'
 import store from '@/store/index'
+import axios from '@axios'
+import { getHomeRouteForLoggedInUser } from '@/auth/utils'
+
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 export default {
+  directives: {
+    'b-tooltip': VBTooltip,
+  },
   components: {
     BRow,
     BCol,
@@ -210,6 +244,7 @@ export default {
     BImg,
     BForm,
     BButton,
+    BAlert,
     VuexyLogo,
     ValidationProvider,
     ValidationObserver,
@@ -218,10 +253,11 @@ export default {
   data() {
     return {
       status: '',
-      password: '',
-      userEmail: '',
+      password: 'Rahasia123&',
+      userEmail: 'admin@admin.com',
       sideImg: require('@/assets/images/pages/login-v2.svg'),
-      // validation rulesimport store from '@/store/index'
+
+      // validation rules
       required,
       email,
     }
@@ -240,17 +276,54 @@ export default {
     },
   },
   methods: {
-    validationForm() {
-      this.$refs.loginValidation.validate().then(success => {
+    login() {
+      this.$refs.loginForm.validate().then(success => {
         if (success) {
-          this.$toast({
-            component: ToastificationContent,
-            props: {
-              title: 'Form Submitted',
-              icon: 'EditIcon',
-              variant: 'success',
-            },
+          axios.post('api/v1/auth/login', {
+            email: this.userEmail,
+            password: this.password,
           })
+            .then(response => {
+              console.log(response.data.data)
+              const userData = response.data.data.user
+              useJwt.setToken(response.data.data.token)
+              useJwt.setRefreshToken(response.data.data.refresh_token)
+              localStorage.setItem('userData', JSON.stringify(userData))
+              // this.$ability.update(userData.ability)
+
+              // ? This is just for demo purpose. Don't think CASL is role based in this case, we used role in if condition just for ease
+              console.log(userData.role.name)
+              this.$router.replace(getHomeRouteForLoggedInUser('login', userData.role.name))
+              this.$router.replace('second-page')
+                .then(() => {
+                  this.$toast({
+                    component: ToastificationContent,
+                    position: 'top-right',
+                    props: {
+                      title: `Welcome ${userData.fullName || userData.username}`,
+                      icon: 'CoffeeIcon',
+                      variant: 'success',
+                      text: `You have successfully logged in as ${userData.role}. Now you can start to explore!`,
+                    },
+                  })
+                })
+            })
+            .catch(error => {
+              console.log(error)
+              // this.$refs.loginForm.setErrors(error.response.data.error)
+              this.$toast({
+                component: ToastificationContent,
+                props: {
+                  title: ` ${error}`,
+                  icon: 'InfoIcon',
+                  // text: 'I do not think that word means what you think it means.',
+                  variant: 'danger',
+                },
+              },
+              {
+                position: 'bottom-right',
+              })
+            })
         }
       })
     },
@@ -259,5 +332,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@core/scss/vue/pages/page-auth.scss";
+@import '@core/scss/vue/pages/page-auth.scss';
 </style>
