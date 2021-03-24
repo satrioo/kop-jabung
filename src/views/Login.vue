@@ -294,7 +294,8 @@ export default {
               // ? This is just for demo purpose. Don't think CASL is role based in this case, we used role in if condition just for ease
               console.log(userData.role.name)
               this.$router.replace(getHomeRouteForLoggedInUser('login', userData.role.name))
-              this.$router.replace('second-page')
+              // this.$router.replace('second-page')
+              this.$router.replace('disposisi/proses-disposisi')
                 .then(() => {
                   this.$toast({
                     component: ToastificationContent,
