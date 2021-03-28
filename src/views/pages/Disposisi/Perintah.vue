@@ -1,20 +1,6 @@
 <template>
-  <b-card-code title="Daftar Proses Disposisi">
-    <b-link
-      to="/disposisi/tambah-disposisi"
-    >
-      <b-button
-        variant="outline-primary"
-        class="bg-gradient-primary"
-        style="position: absolute; right: 20px; top: 15px;"
-      >
-        <feather-icon
-          icon="PlusIcon"
-          class="mr-50"
-        />
-        <span class="align-middle text-light">Tambah Surat Masuk</span>
-      </b-button>
-    </b-link>
+  <b-card-code title="Daftar Perintah Disposisi">
+
     <!-- search input -->
     <div class="custom-search d-flex justify-content-end">
       <b-form-group>
@@ -91,12 +77,12 @@
                   class="text-body align-middle mr-25"
                 />
               </template>
-              <b-dropdown-item @click="editDisposisi(props.row.NoDisposisi)">
+              <b-dropdown-item @click="editDisposisi">
                 <feather-icon
                   icon="Edit2Icon"
                   class="mr-50"
                 />
-                <span>Edit </span>
+                <span>Edit</span>
               </b-dropdown-item>
               <b-dropdown-item>
                 <feather-icon
@@ -171,6 +157,7 @@
 </template>
 
 <script>
+/* eslint-disable vue/no-unused-components */
 /* eslint-disable no-unused-vars */
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
@@ -290,9 +277,8 @@ export default {
     this.getDisposisi()
   },
   methods: {
-    editDisposisi(e) {
-      console.log(e)
-      window.location.href = `edit-disposisi/${'asd'}`
+    editDisposisi() {
+      window.location.href = `edit-disposisi/${this.pageLength}`
     },
     async getDisposisi() {
       const { data } = await axios.get('api/v1/siap/dispositions',

@@ -12,6 +12,10 @@ export default [
         title: 'Selesai',
         route: 'selesai',
       },
+      {
+        title: 'Perintah Disposisi',
+        route: 'perintah-disposisi',
+      },
     ],
   },
   {

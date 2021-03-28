@@ -31,10 +31,10 @@
               label="Deadline"
               label-for="Deadline"
             >
-              <b-form-input
-                id="Deadline"
+              <b-form-select
                 v-model="Deadline"
-                placeholder="3 - Hari"
+                :options="optionsDeadline"
+                placeholder="as"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -72,10 +72,10 @@
               label="Kategori"
               label-for="Kategori"
             >
-              <b-form-input
-                id="Kategori"
+              <b-form-select
                 v-model="Kategori"
-                placeholder="Input Kategori"
+                :options="optionsKategori"
+                placeholder="as"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -102,7 +102,89 @@
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
+
+          <validation-provider
+            #default="{ errors }"
+            name="FileSurat"
+            rules="required"
+          >
+            <b-form-group
+              class="mt-2"
+              label="Divisi/ Bagian/Unit Terkait"
+              label-for="divisi"
+            >
+              <!-- <label for="tags-basic">Tekan Enter untuk tag baru</label> -->
+              <b-form-tags
+                v-model="value"
+                input-id="tags-basic"
+                placeholder="Tambah Tag"
+              />
+            </b-form-group>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+
+          <b-row
+            class="match-height mt-2"
+            style="padding: 0px 20px 0px;"
+          >
+            <b-form-group
+              label="Manajer Divisi Intit"
+            >
+              <b-form-checkbox-group
+                v-model="selected"
+                :options="options"
+                value-field="item"
+                text-field="name"
+                disabled-field="notEnabled"
+                class="demo-inline-spacing labelfull"
+              />
+            </b-form-group>
+          </b-row>
         </b-col>
+        <b-col md="6">
+          <label for="textarea-default">Deskripsi</label>
+          <b-form-textarea
+            id="textarea-default"
+            v-model="Deskripsi"
+            placeholder="Textarea"
+            rows="3"
+          />
+
+          <label
+            for="textarea-default"
+            class="mt-2"
+          >Catatan</label>
+          <b-form-textarea
+            id="textarea-default"
+            v-model="Catatan"
+            placeholder="Textarea"
+            rows="3"
+          />
+
+          <validation-provider
+            #default="{ errors }"
+            name="FileSurat"
+            rules="required"
+            class="mt-2"
+          >
+            <b-form-group
+              label="Tag"
+              label-for="tag"
+            >
+              <!-- <label for="tags-basic">Tekan Enter untuk tag baru</label> -->
+              <b-form-tags
+                v-model="tags"
+                input-id="tags-basic"
+                placeholder="Tambah Tag"
+              />
+            </b-form-group>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
+
+        </b-col>
+      </b-row>
+
+      <b-row class="match-height">
         <b-col md="6">
           <b-form-group
             label="File Surat"
@@ -114,69 +196,10 @@
               v-model="file"
               placeholder="Input File Surat"
               drop-placeholder="Drop file here..."
+              @change="fileChange"
             />
           </b-form-group>
         </b-col>
-      </b-row>
-
-      <b-row class="match-height">
-        <b-col md="6">
-          <label for="textarea-default">Deskripsi</label>
-          <b-form-textarea
-            id="textarea-default"
-            placeholder="Textarea"
-            rows="3"
-          />
-        </b-col>
-        <b-col md="6">
-          <label for="textarea-default">Catatan</label>
-          <b-form-textarea
-            id="textarea-default"
-            placeholder="Textarea"
-            rows="3"
-          />
-        </b-col>
-      </b-row>
-
-      <b-row class="match-height">
-        <b-col md="6">
-          <validation-provider
-            #default="{ errors }"
-            name="FileSurat"
-            rules="required"
-          >
-            <b-form-group
-              label="Divisi/ Bagian/Unit Terkait"
-              label-for="divisi"
-            >
-              <label for="tags-basic">Tekan Enter untuk tag baru</label>
-              <b-form-tags
-                v-model="value"
-                input-id="tags-basic"
-                placeholder="Tambah Tag"
-              />
-            </b-form-group>
-            <small class="text-danger">{{ errors[0] }}</small>
-          </validation-provider>
-        </b-col>
-      </b-row>
-
-      <b-row
-        class="match-height"
-        style="padding: 0px 20px 0px;"
-      >
-        <b-form-group
-          label="Manajer Divisi Intit"
-        >
-          <b-form-checkbox-group
-            v-model="selected"
-            :options="options"
-            value-field="item"
-            text-field="name"
-            disabled-field="notEnabled"
-            class="demo-inline-spacing labelfull"
-          />
-        </b-form-group>
       </b-row>
 
       <b-button
@@ -205,6 +228,8 @@ import {
 } from 'bootstrap-vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { required, email } from '@validations'
+import axios from '@axios'
+import useJwt from '@/auth/jwt/useJwt'
 
 export default {
   components: {
@@ -236,25 +261,82 @@ export default {
       Perihal: '',
       Kategori: '',
       Pengirim: '',
+      Deskripsi: '',
+      Catatan: '',
       file: null,
+      fileName: '',
       value: ['apple', 'orange'],
+      tags: ['apple', 'orange'],
+      optionsDeadline: [
+        { value: '', text: 'Pilih Deadline' },
+        { value: 'OneDay', text: 'OneDay' },
+        { value: 'TwoDay', text: 'TwoDay' },
+        { value: 'ThreeDay', text: 'ThreeDay' },
+      ],
+      optionsKategori: [
+        { value: '', text: 'Pilih Kategori' },
+        { value: 'a', text: 'Undangan' },
+        { value: 'b', text: 'Permohonan' },
+        { value: 'e', text: 'CSR' },
+        { value: 'd', text: 'Instansi Pendidikan' },
+        { value: 'e', text: 'Pemberitahuan' },
+        { value: 'd', text: 'ILain-lain' },
+      ],
       selected: [],
       options: [
-        { item: 'KabagProduksi', name: 'Kabag Produksi' },
-        { item: 'ManajerUmum', name: 'Manajer Umum' },
-        { item: 'ManajerDivisi', name: 'Manajer Divisi Inti' },
-        { item: 'KabagKeuangan', name: 'Kabag Keuangan' },
+        { item: '1', name: 'Kabag Produksi' },
+        { item: '2', name: 'Manajer Umum' },
+        { item: '3', name: 'Manajer Divisi Inti' },
+        { item: '4', name: 'Kabag Keuangan' },
       ],
     }
   },
   methods: {
+
+    async fileChange(e) {
+      const file = e.target.files[0]
+      const image = new FormData()
+      image.append('file_id', file)
+      this.file = URL.createObjectURL(file)
+      const { data } = await axios.post('/api/v1/file/upload', image)
+      this.fileName = data
+      console.log(this.fileName)
+    },
+
     validationForm() {
       this.$refs.simpleRules.validate().then(success => {
         if (success) {
-          // eslint-disable-next-line
-          alert('form submitted!')
+          this.addDispo()
         }
       })
+    },
+
+    async addDispo() {
+      await axios.post('api/v1/siap/disposition/add', {
+        cat_name: this.Kategori,
+        title: this.Perihal,
+        from: this.Pengirim,
+        dateline: this.Deadline,
+        file: this.fileName.file,
+        desc: this.Deskripsi,
+        note: this.Catatan,
+        tags: this.tags,
+        forward_to: {
+          responders: [
+            this.selected,
+          ],
+        },
+
+      }, {
+        headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+      })
+        .then(response => {
+          console.log(response.data.data)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
   },
 }

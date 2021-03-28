@@ -95,4 +95,18 @@ export default [
       ],
     },
   },
+  {
+    path: '/disposisi/perintah',
+    name: 'perintah-disposisi',
+    component: () => import('@/views/pages/Disposisi/Perintah.vue'),
+    meta: {
+      pageTitle: 'Perintah Disposisi',
+      breadcrumb: [
+        {
+          text: 'Perintah Disposisi',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

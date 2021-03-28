@@ -49,8 +49,8 @@ export default class JwtService {
               this.isAlreadyFetchingAccessToken = false
 
               // Update accessToken in localStorage
-              this.setToken(r.data.accessToken)
-              this.setRefreshToken(r.data.refreshToken)
+              this.setToken(r.data.data.token)
+              this.setRefreshToken(r.data.data.refresh_token)
 
               this.onAccessTokenFetched(r.data.accessToken)
             })
@@ -105,7 +105,7 @@ export default class JwtService {
 
   refreshToken() {
     return this.axiosIns.post(this.jwtConfig.refreshEndpoint, {
-      refreshToken: this.getRefreshToken(),
+      refresh_token: this.getRefreshToken(),
     })
   }
 }

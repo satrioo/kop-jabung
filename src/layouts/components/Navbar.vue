@@ -32,9 +32,9 @@
         <template #button-content>
           <div class="d-sm-flex d-none user-nav icon-white">
             <p class="user-name font-weight-bolder mb-0">
-              John Doe
+              {{ userName }}
             </p>
-            <span class="user-status">Admin</span>
+            <span class="user-status"> {{ userRole }}</span>
           </div>
           <b-avatar
             size="40"
@@ -126,9 +126,19 @@ export default {
       default: () => {},
     },
   },
+  data() {
+    return {
+      userName: '',
+      userRole: '',
+    }
+  },
+  mounted() {
+    const userData = JSON.parse(localStorage.getItem('userData'))
+    this.userName = userData.name
+    this.userRole = userData.role.name
+  },
   methods: {
     logout() {
-      console.log('lalala')
       // Remove userData from localStorage
       // ? You just removed token from localStorage. If you like, you can also make API call to backend to blacklist used token
       localStorage.removeItem(useJwt.jwtConfig.storageTokenKeyName)
@@ -136,9 +146,6 @@ export default {
 
       // Remove userData from localStorage
       localStorage.removeItem('userData')
-
-      // Reset ability
-      // this.$ability.update(initialAbility)
 
       // Redirect to login page
       this.$router.push({ name: 'auth-login' })

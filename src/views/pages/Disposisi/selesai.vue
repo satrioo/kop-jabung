@@ -1,5 +1,6 @@
 <template>
-  <b-card-code title="Daftar Disposisi Selesai">
+  <b-card-code title="Daftar Proses Disposisi Selesai">
+
     <!-- search input -->
     <div class="custom-search d-flex justify-content-end">
       <b-form-group>
@@ -18,7 +19,7 @@
     <!-- table -->
     <vue-good-table
       :columns="columns"
-      :rows="rows"
+      :rows="dataRows"
       :rtl="direction"
       :search-options="{
         enabled: true,
@@ -59,6 +60,39 @@
           <b-badge :variant="statusVariant(props.row.Status)">
             {{ props.row.Status }}
           </b-badge>
+        </span>
+
+        <!-- Column: Action -->
+        <span v-else-if="props.column.field === 'Aksi'">
+          <span>
+            <b-dropdown
+              variant="link"
+              toggle-class="text-decoration-none nopad"
+              no-caret
+            >
+              <template v-slot:button-content>
+                <feather-icon
+                  icon="MoreVerticalIcon"
+                  size="16"
+                  class="text-body align-middle mr-25"
+                />
+              </template>
+              <b-dropdown-item @click="editDisposisi">
+                <feather-icon
+                  icon="Edit2Icon"
+                  class="mr-50"
+                />
+                <span>Edit</span>
+              </b-dropdown-item>
+              <b-dropdown-item>
+                <feather-icon
+                  icon="TrashIcon"
+                  class="mr-50"
+                />
+                <span>Delete</span>
+              </b-dropdown-item>
+            </b-dropdown>
+          </span>
         </span>
 
         <!-- Column: Common -->
@@ -124,13 +158,15 @@
 
 <script>
 /* eslint-disable vue/no-unused-components */
+/* eslint-disable no-unused-vars */
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
-  BAvatar, BBadge, BPagination, BFormGroup, BFormInput, BFormSelect,
+  BAvatar, BBadge, BPagination, BFormGroup, BFormInput, BFormSelect, BDropdown, BDropdownItem,
   BButton, BLink,
 } from 'bootstrap-vue'
 import { VueGoodTable } from 'vue-good-table'
-
+import axios from '@axios'
+import useJwt from '@/auth/jwt/useJwt'
 // import store from '@/store/index'
 // import { codeBasic } from './code'
 
@@ -145,6 +181,8 @@ export default {
     BFormGroup,
     BFormInput,
     BFormSelect,
+    BDropdown,
+    BDropdownItem,
     BButton,
   },
   data() {
@@ -177,18 +215,33 @@ export default {
           label: 'Status',
           field: 'Status',
         },
+        {
+          label: 'Aksi',
+          field: 'Aksi',
+        },
       ],
+      dataRows: [{
+        NoDisposisi: '',
+        Perihal: '',
+        Waktu: '',
+        Deadline: '',
+        Pengirim: '',
+        Status: '',
+        Aksi: '',
+      }],
       rows: [
         {
           NoDisposisi: '123123',
           Perihal: 'Aksi',
           Waktu: 'Waktu',
+          salary: 'salary',
           Deadline: 'Deadline',
           Pengirim: 'Pengirim',
           Status: 'Proses',
+          Aksi: '<a> asdasd </a>',
         },
       ],
-      searchTerm: '',
+      searchTerm: 'Selesai',
       Status: [{
         1: 'Current',
         2: 'Proses',
@@ -220,9 +273,36 @@ export default {
       return status => statusColor[status]
     },
   },
-  created() {
-    this.$http.get('/good-table/basic')
-      .then(res => { this.rows = res.data })
+  mounted() {
+    this.getDisposisi()
+  },
+  methods: {
+    editDisposisi() {
+      window.location.href = `edit-disposisi/${this.pageLength}`
+    },
+
+    async getDisposisi() {
+      const { data } = await axios.get('api/v1/siap/dispositions',
+        {
+          headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+        })
+
+      this.dataRows = data.data.map(e => ({
+        NoDisposisi: e.code,
+        Perihal: e.desc,
+        Waktu: e.date,
+        Deadline: e.dateline,
+        Pengirim: e.from,
+        Status: e.status_letter,
+        Aksi: '',
+      }))
+
+      console.log('datarows', this.dataRows)
+        .catch(error => {
+          console.log(error)
+        })
+    },
   },
 }
 </script>
