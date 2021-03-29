@@ -109,4 +109,18 @@ export default [
       ],
     },
   },
+  {
+    path: '/surat-keluar/tulis',
+    name: 'surat-keluar-tulis',
+    component: () => import('@/views/pages/SuratKeluar/TulisSurat.vue'),
+    meta: {
+      pageTitle: 'Tulis Surat Keluar',
+      breadcrumb: [
+        {
+          text: 'Tulis Surat Keluar',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

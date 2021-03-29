@@ -25,7 +25,7 @@ export default [
     children: [
       {
         title: 'Tulis Surat',
-        route: 'dashboard-ecommerce',
+        route: 'surat-keluar-tulis',
       },
       {
         title: 'Proses Pengajuan',

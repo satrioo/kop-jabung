@@ -43,6 +43,8 @@ export default class JwtService {
 
         // if (status === 401) {
         if (response && response.status === 401) {
+          // this.$router.go(),
+          console.log('token-expired')
           if (!this.isAlreadyFetchingAccessToken) {
             this.isAlreadyFetchingAccessToken = true
             this.refreshToken().then(r => {
@@ -52,7 +54,6 @@ export default class JwtService {
               this.setToken(r.data.data.token)
               this.setRefreshToken(r.data.data.refresh_token)
               this.onAccessTokenFetched(r.data.accessToken)
-              this.$router.go()
             })
           }
           const retryOriginalRequest = new Promise(resolve => {
@@ -68,6 +69,7 @@ export default class JwtService {
         }
         return Promise.reject(error)
       },
+
     )
   }
 
