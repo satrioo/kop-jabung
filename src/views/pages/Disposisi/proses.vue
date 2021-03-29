@@ -35,6 +35,7 @@
       :columns="columns"
       :rows="dataRows"
       :rtl="direction"
+      style-class="vgt-table striped"
       :search-options="{
         enabled: true,
         externalQuery: searchTerm }"
@@ -91,7 +92,7 @@
                   class="text-body align-middle mr-25"
                 />
               </template>
-              <b-dropdown-item @click="editDisposisi(props.row.NoDisposisi)">
+              <b-dropdown-item @click="editDisposisi(props.row.id)">
                 <feather-icon
                   icon="Edit2Icon"
                   class="mr-50"
@@ -234,6 +235,7 @@ export default {
         },
       ],
       dataRows: [{
+        id: '',
         NoDisposisi: '',
         Perihal: '',
         Waktu: '',
@@ -292,22 +294,23 @@ export default {
   methods: {
     editDisposisi(e) {
       console.log(e)
-      window.location.href = `edit-disposisi/${'asd'}`
+      window.location.href = `edit-disposisi/${e}`
     },
     async getDisposisi() {
-      const { data } = await axios.get('api/v1/siap/dispositions',
+      const { data } = await axios.get('api/v1/siap/inboxs',
         {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
 
       this.dataRows = data.data.map(e => ({
-        NoDisposisi: e.code,
-        Perihal: e.desc,
-        Waktu: e.date,
-        Deadline: e.dateline,
-        Pengirim: e.from,
-        Status: e.status_letter,
+        id: e.id,
+        NoDisposisi: e.incoming_letter.code,
+        Perihal: e.incoming_letter.title,
+        Waktu: e.incoming_letter.date,
+        Deadline: e.incoming_letter.dateline,
+        Pengirim: e.incoming_letter.from,
+        Status: e.incoming_letter.status_letter,
         Aksi: '',
       }))
       console.log('datarows', this.dataRows)
