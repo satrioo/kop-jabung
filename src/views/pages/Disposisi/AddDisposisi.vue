@@ -102,7 +102,7 @@
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
-
+          <!--
           <validation-provider
             #default="{ errors }"
             name="FileSurat"
@@ -113,7 +113,6 @@
               label="Divisi/ Bagian/Unit Terkait"
               label-for="divisi"
             >
-              <!-- <label for="tags-basic">Tekan Enter untuk tag baru</label> -->
               <b-form-tags
                 v-model="value"
                 input-id="tags-basic"
@@ -121,14 +120,14 @@
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
-          </validation-provider>
+          </validation-provider> -->
 
           <b-row
             class="match-height mt-2"
             style="padding: 0px 20px 0px;"
           >
             <b-form-group
-              label="Manajer Divisi Intit"
+              label="Divisi/ Bagian/Unit Terkait"
             >
               <b-form-checkbox-group
                 v-model="selected"
@@ -284,21 +283,30 @@ export default {
       ],
       selected: [],
       options: [
-        { item: '1', name: 'Kabag Produksi' },
-        { item: '2', name: 'Manajer Umum' },
-        { item: '3', name: 'Manajer Divisi Inti' },
-        { item: '4', name: 'Kabag Keuangan' },
+        { item: '', name: '' },
       ],
     }
+  },
+  mounted() {
+    this.getRole()
   },
   methods: {
 
     async fileChange(e) {
-      const file = e.target.files[0]
+      const files = e.target.files[0]
       const image = new FormData()
-      image.append('file_id', file)
-      this.file = URL.createObjectURL(file)
-      const { data } = await axios.post('/api/v1/file/upload', image)
+      image.append('file', files)
+      image.append('from', 1)
+      this.file = URL.createObjectURL(files)
+      // const { data } = await axios.post('/api/v1/file/upload', image)
+      const { data } = await axios.post('api/v1/file/upload',
+        image, {
+          headers:
+        {
+          'content-type': 'multipart/form-data; boundary=<calculated when request is sent>',
+          token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName),
+        },
+        })
       this.fileName = data
       console.log(this.fileName)
     },
@@ -317,7 +325,8 @@ export default {
         title: this.Perihal,
         from: this.Pengirim,
         dateline: this.Deadline,
-        file: this.fileName.file,
+        file_id: this.fileName.id,
+        file: this.fileName.name,
         desc: this.Deskripsi,
         note: this.Catatan,
         tags: this.tags,
@@ -332,8 +341,22 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
         .then(response => {
-          console.log(response.data.data)
+          console.log(response)
         })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+
+    async getRole() {
+      const { data } = await axios.get('api/v1/siap/disposition/responders',
+        {
+          headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+        })
+
+      this.options = data.map(e => ({ item: e.id, name: e.name }))
+      console.log('datarows', data)
         .catch(error => {
           console.log(error)
         })

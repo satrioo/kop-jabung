@@ -297,7 +297,7 @@ export default {
       window.location.href = `edit-disposisi/${e}`
     },
     async getDisposisi() {
-      const { data } = await axios.get('api/v1/siap/inboxs',
+      const { data } = await axios.get('api/v1/siap/disposition/inboxs',
         {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
