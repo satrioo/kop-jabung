@@ -29,7 +29,7 @@ export default [
       },
       {
         title: 'Proses Pengajuan',
-        route: 'dashboard-analytics',
+        route: 'surat-keluar-proses',
       },
       {
         title: 'Daftar Surat Keluar',

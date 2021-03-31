@@ -409,22 +409,22 @@ export default {
     },
 
     async getDetail() {
-      const { data } = await axios.get('api/v1/siap/inboxs',
+      const param = Number(this.$route.params.id)
+      const { data } = await axios.get(`api/v1/siap/disposition/inbox/${param}`,
         {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
-      const param = Number(this.$route.params.id)
-      const selected = data.data.find(e => e.id === param)
-      this.NoSurat = selected.incoming_letter.code
-      this.Deadline = selected.incoming_letter.dateline
-      this.Perihal = selected.incoming_letter.title
-      this.Kategori = selected.incoming_letter.category.name
-      this.Pengirim = selected.incoming_letter.from
-      this.Deskripsi = selected.incoming_letter.desc
-      this.Catatan = selected.incoming_letter.note
-      this.tags = selected.tags
-      console.log(selected)
+
+      this.NoSurat = data.incoming_letter.code
+      this.Deadline = data.incoming_letter.dateline
+      this.Perihal = data.incoming_letter.title
+      this.Kategori = data.incoming_letter.category.name
+      this.Pengirim = data.incoming_letter.from
+      this.Deskripsi = data.incoming_letter.desc
+      this.Catatan = data.incoming_letter.note
+      this.tags = data.tags
+      console.log(data)
         .catch(error => {
           console.log(error)
         })

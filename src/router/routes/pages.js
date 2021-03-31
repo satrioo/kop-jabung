@@ -123,4 +123,18 @@ export default [
       ],
     },
   },
+  {
+    path: '/surat-keluar/proses',
+    name: 'surat-keluar-proses',
+    component: () => import('@/views/pages/SuratKeluar/ProsesSurat.vue'),
+    meta: {
+      pageTitle: 'Proses Surat Keluar',
+      breadcrumb: [
+        {
+          text: 'Proses Surat Keluar',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

@@ -274,12 +274,12 @@ export default {
       ],
       optionsKategori: [
         { value: '', text: 'Pilih Kategori' },
-        { value: 'a', text: 'Undangan' },
-        { value: 'b', text: 'Permohonan' },
-        { value: 'e', text: 'CSR' },
-        { value: 'd', text: 'Instansi Pendidikan' },
-        { value: 'e', text: 'Pemberitahuan' },
-        { value: 'd', text: 'ILain-lain' },
+        { value: 'Undangan', text: 'Undangan' },
+        { value: 'Permohonan', text: 'Permohonan' },
+        { value: 'CSR', text: 'CSR' },
+        { value: 'Instansi Pendidikan', text: 'Instansi Pendidikan' },
+        { value: 'Pemberitahuan', text: 'Pemberitahuan' },
+        { value: 'Lain-lain', text: 'Lain-lain' },
       ],
       selected: [],
       options: [
