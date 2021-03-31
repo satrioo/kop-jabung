@@ -257,14 +257,14 @@ export default {
           salary: 'salary',
           Deadline: 'Deadline',
           Pengirim: 'Pengirim',
-          Status: 'Proses',
+          Status: 'Approved',
           Aksi: '<a> asdasd </a>',
         },
       ],
       searchTerm: '',
       Status: [{
         1: 'Current',
-        2: 'Proses',
+        2: 'Approved',
         3: 'Rejected',
         4: 'Resigned',
         5: 'Applied',
@@ -283,7 +283,7 @@ export default {
       const statusColor = {
         /* eslint-disable key-spacing */
         Current      : 'light-primary',
-        Proses       : 'light-success',
+        Approved       : 'light-success',
         Rejected     : 'light-danger',
         Resigned     : 'light-warning',
         Applied      : 'light-info',

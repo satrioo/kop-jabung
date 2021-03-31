@@ -258,7 +258,7 @@ export default {
       ],
       searchTerm: '',
       Status: [{
-        1: 'Current',
+        1: 'Process',
         2: 'Proses',
         3: 'Rejected',
         4: 'Resigned',
@@ -277,7 +277,7 @@ export default {
     statusVariant() {
       const statusColor = {
         /* eslint-disable key-spacing */
-        Current      : 'light-primary',
+        Process      : 'light-primary',
         Proses       : 'light-success',
         Rejected     : 'light-danger',
         Resigned     : 'light-warning',

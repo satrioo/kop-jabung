@@ -152,4 +152,18 @@ export default [
       ],
     },
   },
+  {
+    path: '/surat-keluar/daftar',
+    name: 'surat-keluar-daftar',
+    component: () => import('@/views/pages/SuratKeluar/DaftarSurat.vue'),
+    meta: {
+      pageTitle: 'Daftar Surat Keluar',
+      breadcrumb: [
+        {
+          text: 'Daftar Surat Keluar',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

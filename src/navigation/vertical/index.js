@@ -33,7 +33,7 @@ export default [
       },
       {
         title: 'Daftar Surat Keluar',
-        route: 'Daftar Surat Keluar',
+        route: 'surat-keluar-daftar',
       },
     ],
   },

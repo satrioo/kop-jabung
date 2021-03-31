@@ -2,7 +2,7 @@
   <validation-observer ref="simpleRules">
     <b-card-code title="Tulis Surat Masuk">
       <b-row class="match-height">
-        <b-col md="6">
+        <!-- <b-col md="6">
           <validation-provider
             #default="{ errors }"
             name="Judul"
@@ -20,21 +20,21 @@
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
-        </b-col>
-        <b-col md="6">
+        </b-col> -->
+        <b-col md="12">
           <validation-provider
             #default="{ errors }"
-            name="Kategori"
+            name="Perihal"
             rules="required"
           >
             <b-form-group
-              label="Kategori"
-              label-for="Kategori"
+              label="Perihal"
+              label-for="Perihal"
             >
               <b-form-input
-                id="Kategori"
-                v-model="cat_name"
-                placeholder="Input Kategori"
+                id="Perihal"
+                v-model="Perihal"
+                placeholder="Input Perihal"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -107,17 +107,17 @@
         <b-col md="6">
           <validation-provider
             #default="{ errors }"
-            name="Perihal"
+            name="Kategori"
             rules="required"
           >
             <b-form-group
-              label="Perihal"
-              label-for="Perihal"
+              label="Kategori"
+              label-for="Kategori"
             >
               <b-form-input
-                id="Perihal"
-                v-model="Perihal"
-                placeholder="Input Perihal"
+                id="Kategori"
+                v-model="cat_name"
+                placeholder="Input Kategori"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -207,6 +207,7 @@ export default {
       agency: '',
       note: '',
       address: '',
+      title: '',
       Perihal: '',
       original_letter: '',
       optionsStatus: [
@@ -227,12 +228,12 @@ export default {
 
     async addDispo() {
       await axios.post('api/v1/siap/outgoingletter/add', {
-        title: this.title,
+        title: this.Perihal,
         to: this.to,
         agency: this.agency,
         cat_name: this.cat_name,
         original_letter: this.original_letter,
-        note: this.note,
+        note: this.Perihal,
         address: this.address,
       }, {
         headers:

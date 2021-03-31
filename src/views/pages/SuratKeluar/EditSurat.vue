@@ -1,6 +1,7 @@
 <template>
   <validation-observer ref="simpleRules">
     <b-card-code title="Tulis Surat Masuk">
+
       <b-row class="match-height">
         <b-col md="6">
           <validation-provider
@@ -33,7 +34,7 @@
             >
               <b-form-input
                 id="Kategori"
-                v-model="Kategori"
+                v-model="cat_name"
                 placeholder="Input Kategori"
               />
             </b-form-group>
@@ -55,7 +56,7 @@
             >
               <b-form-input
                 id="Kepada"
-                v-model="Kepada"
+                v-model="to"
                 placeholder="Input Kepada"
               />
             </b-form-group>
@@ -65,17 +66,17 @@
         <b-col md="6">
           <validation-provider
             #default="{ errors }"
-            name="Perihal"
+            name="Alamat"
             rules="required"
           >
             <b-form-group
-              label="Perihal"
-              label-for="Perihal"
+              label="Alamat"
+              label-for="Alamat"
             >
               <b-form-input
-                id="Perihal"
-                v-model="Perihal"
-                placeholder="Input Perihal"
+                id="Alamat"
+                v-model="address"
+                placeholder="Input Alamat"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -96,7 +97,7 @@
             >
               <b-form-input
                 id="Instansi"
-                v-model="Instansi"
+                v-model="agency"
                 placeholder="Input Instansi"
               />
             </b-form-group>
@@ -107,17 +108,17 @@
         <b-col md="6">
           <validation-provider
             #default="{ errors }"
-            name="Tempat Berkas"
+            name="Perihal"
             rules="required"
           >
             <b-form-group
-              label="Tempat Berkas"
-              label-for="Tempat Berkas"
+              label="Perihal"
+              label-for="Perihal"
             >
               <b-form-input
-                id="TempatBerkas"
-                v-model="TempatBerkas"
-                placeholder="Input Tempat Berkas"
+                id="Perihal"
+                v-model="Perihal"
+                placeholder="Input Perihal"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -132,7 +133,7 @@
             label="Isi surat"
           >
             <quill-editor
-              v-model="content"
+              v-model="original_letter"
               :options="snowOption"
               style="height: 250px"
             />
@@ -140,14 +141,14 @@
         </b-col>
       </b-row>
 
-      <b-button
+      <!-- <b-button
         variant="outline-primary"
         class="bg-gradient-primary "
         type="submit"
         @click.prevent="validationForm"
       >
         <span class="align-middle">Simpan</span>
-      </b-button>
+      </b-button> -->
 
     </b-card-code>
 
@@ -156,20 +157,11 @@
         class="mb-5"
       >
         <quill-editor
-          v-model="content"
+          v-model="validated_letter"
           :options="snowOption"
           style="height: 250px"
         />
       </b-form-group>
-
-      <b-button
-        variant="outline-primary"
-        class="bg-gradient-primary "
-        type="submit"
-        @click.prevent="validationForm"
-      >
-        <span class="align-middle">Validasi</span>
-      </b-button>
     </b-card-code>
 
     <b-card-code title="Status Surat Keluar">
@@ -184,7 +176,7 @@
             class="mb-2"
           >
             <b-form-select
-              v-model="Status"
+              v-model="status"
               :options="optionsStatus"
               placeholder=""
             />
@@ -196,7 +188,7 @@
           >
             <b-form-textarea
               id="textarea-default"
-              v-model="Deskripsi"
+              v-model="note"
               placeholder="Textarea"
               rows="3"
             />
@@ -206,14 +198,18 @@
           offset-md="1"
           md="7"
         >
-          <div class="tanggapan2">
+          <div
+            v-for="option in activity"
+            :key="option.id"
+            class="tanggapan2"
+          >
             <div class="avatar">
               <img :src="require('@/assets/images/icons/user.png')">
             </div>
             <div class="text">
-              <h2> Ketua I </h2>
+              <h2> {{ option.user.name }} </h2>
               <h4> 12-03-2021 09:00 WIB </h4>
-              <h3> Belum ada keputusan disposisi. </h3>
+              <h3> {{ option.message_id }} </h3>
             </div>
           </div>
         </b-col>
@@ -244,6 +240,7 @@ import { required, email } from '@validations'
 import axios from '@axios'
 import useJwt from '@/auth/jwt/useJwt'
 import { quillEditor } from 'vue-quill-editor'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 import 'quill/dist/quill.core.css'
 // eslint-disable-next-line
@@ -278,69 +275,121 @@ export default {
   data() {
     return {
       NoSurat: '',
-      Deadline: '',
+      cat_name: '',
+      to: '',
+      agency: '',
+      note: '',
+      address: '',
+      title: '',
       Perihal: '',
-      Kategori: '',
-      Pengirim: '',
-      Deskripsi: '',
-      Catatan: '',
-      Status: '',
-      file: null,
-      fileName: '',
-      value: ['apple', 'orange'],
-      tags: ['apple', 'orange'],
+      status: '',
+      original_letter: '',
+      validated_letter: '',
+      activity: [],
       optionsStatus: [
         { value: '', text: 'Proses' },
-        { value: 'OneDay', text: 'Disetujui' },
-        { value: 'TwoDay', text: 'Ditolak' },
+        { value: 'Approved', text: 'Disetujui' },
+        { value: 'Ditolak', text: 'Ditolak' },
       ],
     }
   },
+  mounted() {
+    this.getDetail()
+    this.getActifity()
+  },
   methods: {
-
-    async fileChange(e) {
-      const file = e.target.files[0]
-      const image = new FormData()
-      image.append('file_id', file)
-      this.file = URL.createObjectURL(file)
-      const { data } = await axios.post('/api/v1/file/upload', image)
-      this.fileName = data
-      console.log(this.fileName)
-    },
-
     validationForm() {
       this.$refs.simpleRules.validate().then(success => {
         if (success) {
-          this.addDispo()
+          this.editSurat()
         }
       })
     },
 
-    async addDispo() {
-      await axios.post('api/v1/siap/disposition/add', {
-        cat_name: this.Kategori,
-        title: this.Perihal,
-        from: this.Pengirim,
-        dateline: this.Deadline,
-        file: this.fileName.file,
-        desc: this.Deskripsi,
-        note: this.Catatan,
-        tags: this.tags,
-        forward_to: {
-          responders: [
-            this.selected,
-          ],
-        },
+    async getDetail() {
+      const param = Number(this.$route.params.id)
+      const { data } = await axios.get(`api/v1/siap/outgoingletter/inbox/${param}`,
+        {
+          headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+        })
 
+      this.NoSurat = data.code
+      this.cat_name = data.category.name
+      this.to = data.to
+      this.agency = data.agency
+      this.note = data.note
+      this.address = data.address
+      this.title = data.title
+      this.Perihal = data.title
+      this.original_letter = data.original_letter
+      this.validated_letter = data.validated_letter
+      this.status = data.status_letter
+      console.log(data)
+        .catch(error => {
+          console.log(error)
+        })
+    },
+
+    async getActifity() {
+      const param = Number(this.$route.params.id)
+      const { data } = await axios.get(`api/v1/siap/outgoingletter/activities?olid=${param}`,
+        {
+          headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+        })
+      this.activity = data
+      console.log(data)
+        .catch(error => {
+          console.log(error)
+        })
+    },
+
+    async editSurat() {
+      const param = Number(this.$route.params.id)
+      await axios.post(`api/v1/siap/outgoingletter/update/${param}`, {
+        title: this.Perihal,
+        to: this.to,
+        agency: this.agency,
+        cat_name: this.cat_name,
+        original_letter: this.original_letter,
+        validated_letter: this.validated_letter,
+        status: this.status,
+        note: this.note,
+        address: this.address,
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
         .then(response => {
-          console.log(response.data.data)
+          console.log(response)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Success',
+              icon: 'InfoIcon',
+              text: response.data.message,
+              variant: 'success',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
         })
         .catch(error => {
-          console.log(error)
+          console.log('asdasd', error.response)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Error',
+              icon: 'InfoIcon',
+              text: error.response.data.error.message,
+              variant: 'danger',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
         })
     },
   },
@@ -369,6 +418,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: end;
+  margin: 5px 0;
   .avatar{
     width: 80px;
     margin-right: 20px;
