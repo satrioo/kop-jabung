@@ -103,7 +103,7 @@
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
 
-          <validation-provider
+          <!-- <validation-provider
             #default="{ errors }"
             name="FileSurat"
             rules="required"
@@ -113,7 +113,6 @@
               label="Divisi/ Bagian/Unit Terkait"
               label-for="divisi"
             >
-              <!-- <label for="tags-basic">Tekan Enter untuk tag baru</label> -->
               <b-form-tags
                 v-model="value"
                 input-id="tags-basic"
@@ -121,14 +120,14 @@
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
-          </validation-provider>
+          </validation-provider> -->
 
           <b-row
             class="match-height mt-2"
             style="padding: 0px 20px 0px;"
           >
             <b-form-group
-              label="Manajer Divisi Intit"
+              label="Divisi/ Bagian/Unit Terkait"
             >
               <b-form-checkbox-group
                 v-model="selected"

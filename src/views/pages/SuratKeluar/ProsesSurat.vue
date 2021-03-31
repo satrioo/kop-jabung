@@ -1,7 +1,7 @@
 <template>
   <b-card-code title="Daftar Proses Disposisi">
     <b-link
-      to="/disposisi/tambah-disposisi"
+      to="/surat-keluar/tulis"
     >
       <b-button
         variant="outline-primary"
@@ -12,7 +12,7 @@
           icon="PlusIcon"
           class="mr-50"
         />
-        <span class="align-middle text-light">Tambah Surat Masuk</span>
+        <span class="align-middle text-light">Tambah Surat Keluar</span>
       </b-button>
     </b-link>
     <!-- search input -->
@@ -299,7 +299,7 @@ export default {
   methods: {
     editDisposisi(e) {
       console.log(e)
-      window.location.href = `edit-disposisi/${e}`
+      window.location.href = `edit-suratkeluar/${e}`
     },
     async getSurat() {
       const { data } = await axios.get('api/v1/siap/outgoingletter/inboxs',
@@ -309,13 +309,6 @@ export default {
         })
       console.log('DATA', data)
       this.dataRows = data.data.map(e => ({
-        // id: e.id,
-        // NoDisposisi: e.incoming_letter.code,
-        // Perihal: e.incoming_letter.title,
-        // Waktu: e.incoming_letter.date,
-        // Deadline: e.incoming_letter.dateline,
-        // Pengirim: e.incoming_letter.from,
-        // Status: e.incoming_letter.status_letter,
         id: e.id,
         NoSurat: e.code,
         Kategori: e.category.name,

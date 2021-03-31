@@ -56,6 +56,7 @@ export default class JwtService {
               this.onAccessTokenFetched(r.data.accessToken)
             })
           }
+          this.$router.go()
           const retryOriginalRequest = new Promise(resolve => {
             this.addSubscriber(accessToken => {
               // Make sure to assign accessToken according to your response.

@@ -5,17 +5,17 @@
         <b-col md="6">
           <validation-provider
             #default="{ errors }"
-            name="No.Surat Keluar"
+            name="Judul"
             rules="required"
           >
             <b-form-group
-              label="No.Surat Keluar"
-              label-for="No.Surat Keluar"
+              label="Judul"
+              label-for="Judul"
             >
               <b-form-input
-                id="No.Surat Keluar"
-                v-model="NoSurat"
-                placeholder="Input No. Surat Keluar"
+                id="Judul"
+                v-model="title"
+                placeholder="Input Judul"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -33,7 +33,7 @@
             >
               <b-form-input
                 id="Kategori"
-                v-model="Kategori"
+                v-model="cat_name"
                 placeholder="Input Kategori"
               />
             </b-form-group>
@@ -55,7 +55,7 @@
             >
               <b-form-input
                 id="Kepada"
-                v-model="Kepada"
+                v-model="to"
                 placeholder="Input Kepada"
               />
             </b-form-group>
@@ -65,17 +65,17 @@
         <b-col md="6">
           <validation-provider
             #default="{ errors }"
-            name="Perihal"
+            name="Alamat"
             rules="required"
           >
             <b-form-group
-              label="Perihal"
-              label-for="Perihal"
+              label="Alamat"
+              label-for="Alamat"
             >
               <b-form-input
-                id="Perihal"
-                v-model="Perihal"
-                placeholder="Input Perihal"
+                id="Alamat"
+                v-model="address"
+                placeholder="Input Alamat"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -96,7 +96,7 @@
             >
               <b-form-input
                 id="Instansi"
-                v-model="Instansi"
+                v-model="agency"
                 placeholder="Input Instansi"
               />
             </b-form-group>
@@ -107,17 +107,17 @@
         <b-col md="6">
           <validation-provider
             #default="{ errors }"
-            name="Tempat Berkas"
+            name="Perihal"
             rules="required"
           >
             <b-form-group
-              label="Tempat Berkas"
-              label-for="Tempat Berkas"
+              label="Perihal"
+              label-for="Perihal"
             >
               <b-form-input
-                id="TempatBerkas"
-                v-model="TempatBerkas"
-                placeholder="Input Tempat Berkas"
+                id="Perihal"
+                v-model="Perihal"
+                placeholder="Input Perihal"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -132,7 +132,7 @@
             label="Isi surat"
           >
             <quill-editor
-              v-model="content"
+              v-model="original_letter"
               :options="snowOption"
               style="height: 250px"
             />
@@ -151,84 +151,6 @@
 
     </b-card-code>
 
-    <b-card-code title="Validasi Surat Masuk">
-      <b-form-group
-        class="mb-5"
-      >
-        <quill-editor
-          v-model="content"
-          :options="snowOption"
-          style="height: 250px"
-        />
-      </b-form-group>
-
-      <b-button
-        variant="outline-primary"
-        class="bg-gradient-primary "
-        type="submit"
-        @click.prevent="validationForm"
-      >
-        <span class="align-middle">Validasi</span>
-      </b-button>
-    </b-card-code>
-
-    <b-card-code title="Status Surat Keluar">
-      <b-row
-        class="match-height"
-        style="margin:0"
-      >
-        <b-col md="4">
-          <b-form-group
-            label="Status"
-            label-for="Status"
-            class="mb-2"
-          >
-            <b-form-select
-              v-model="Status"
-              :options="optionsStatus"
-              placeholder=""
-            />
-          </b-form-group>
-
-          <b-form-group
-            label="Catatan"
-            label-for="Catatan"
-          >
-            <b-form-textarea
-              id="textarea-default"
-              v-model="Deskripsi"
-              placeholder="Textarea"
-              rows="3"
-            />
-          </b-form-group>
-        </b-col>
-        <b-col
-          offset-md="1"
-          md="7"
-        >
-          <div class="tanggapan">
-            <div class="avatar">
-              <img :src="require('@/assets/images/icons/user.png')">
-            </div>
-            <div class="text">
-              <h2> Ketua I </h2>
-              <h4> 12-03-2021 09:00 WIB </h4>
-              <h3> Belum ada keputusan disposisi. </h3>
-            </div>
-          </div>
-        </b-col>
-
-        <b-button
-          variant="outline-primary"
-          class="bg-gradient-primary mt-2"
-          style="margin-left: 15px"
-          type="submit"
-          @click.prevent="validationForm"
-        >
-          <span class="align-middle">Validasi</span>
-        </b-button>
-      </b-row>
-    </b-card-code>
   </validation-observer>
 </template>
 
@@ -244,6 +166,7 @@ import { required, email } from '@validations'
 import axios from '@axios'
 import useJwt from '@/auth/jwt/useJwt'
 import { quillEditor } from 'vue-quill-editor'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 import 'quill/dist/quill.core.css'
 // eslint-disable-next-line
@@ -274,21 +197,18 @@ export default {
     BFormCheckboxGroup,
     BFormTextarea,
     quillEditor,
+    ToastificationContent,
   },
   data() {
     return {
       NoSurat: '',
-      Deadline: '',
+      cat_name: '',
+      to: '',
+      agency: '',
+      note: '',
+      address: '',
       Perihal: '',
-      Kategori: '',
-      Pengirim: '',
-      Deskripsi: '',
-      Catatan: '',
-      Status: '',
-      file: null,
-      fileName: '',
-      value: ['apple', 'orange'],
-      tags: ['apple', 'orange'],
+      original_letter: '',
       optionsStatus: [
         { value: '', text: 'Proses' },
         { value: 'OneDay', text: 'Disetujui' },
@@ -297,17 +217,6 @@ export default {
     }
   },
   methods: {
-
-    async fileChange(e) {
-      const file = e.target.files[0]
-      const image = new FormData()
-      image.append('file_id', file)
-      this.file = URL.createObjectURL(file)
-      const { data } = await axios.post('/api/v1/file/upload', image)
-      this.fileName = data
-      console.log(this.fileName)
-    },
-
     validationForm() {
       this.$refs.simpleRules.validate().then(success => {
         if (success) {
@@ -317,27 +226,32 @@ export default {
     },
 
     async addDispo() {
-      await axios.post('api/v1/siap/disposition/add', {
-        cat_name: this.Kategori,
-        title: this.Perihal,
-        from: this.Pengirim,
-        dateline: this.Deadline,
-        file: this.fileName.file,
-        desc: this.Deskripsi,
-        note: this.Catatan,
-        tags: this.tags,
-        forward_to: {
-          responders: [
-            this.selected,
-          ],
-        },
-
+      await axios.post('api/v1/siap/outgoingletter/add', {
+        title: this.title,
+        to: this.to,
+        agency: this.agency,
+        cat_name: this.cat_name,
+        original_letter: this.original_letter,
+        note: this.note,
+        address: this.address,
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
         .then(response => {
-          console.log(response.data.data)
+          console.log(response)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Success',
+              icon: 'InfoIcon',
+              text: response.data.message,
+              variant: 'success',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
         })
         .catch(error => {
           console.log(error)
@@ -365,9 +279,10 @@ export default {
 .labelfull .custom-checkbox {
     width: 100%;
 }
-.tanggapan{
+.tanggapan2{
   display: flex;
   align-items: center;
+  justify-content: end;
   .avatar{
     width: 80px;
     margin-right: 20px;

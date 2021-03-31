@@ -137,4 +137,19 @@ export default [
       ],
     },
   },
+  {
+    // eslint-disable-next-line no-undef
+    path: '/surat-keluar/edit-suratkeluar/:id',
+    name: 'edit-suratkeluar',
+    component: () => import('@/views/pages/SuratKeluar/EditSurat.vue'),
+    meta: {
+      pageTitle: 'Edit Surat Keluar',
+      breadcrumb: [
+        {
+          text: 'Edit Surat Keluar',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

@@ -229,6 +229,7 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { required, email } from '@validations'
 import axios from '@axios'
 import useJwt from '@/auth/jwt/useJwt'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 export default {
   components: {
@@ -247,6 +248,7 @@ export default {
     BFormInput,
     BFormSelect,
     BDropdown,
+    ToastificationContent,
     BDropdownItem,
     BButton,
     BFormTags,
@@ -291,7 +293,6 @@ export default {
     this.getRole()
   },
   methods: {
-
     async fileChange(e) {
       const files = e.target.files[0]
       const image = new FormData()
@@ -342,6 +343,18 @@ export default {
       })
         .then(response => {
           console.log(response)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Success',
+              icon: 'InfoIcon',
+              text: response.data.message,
+              variant: 'success',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
         })
         .catch(error => {
           console.log(error)
