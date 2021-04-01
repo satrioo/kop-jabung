@@ -181,6 +181,7 @@ import {
 import { VueGoodTable } from 'vue-good-table'
 import axios from '@axios'
 import useJwt from '@/auth/jwt/useJwt'
+import dayjs from 'dayjs'
 // import store from '@/store/index'
 // import { codeBasic } from './code'
 
@@ -313,8 +314,8 @@ export default {
         NoSurat: e.code,
         Kategori: e.category.name,
         Perihal: e.title,
-        Waktu: '',
-        Pengirim: '',
+        Waktu: dayjs(e.created_at).format('DD-MM-YYYY'),
+        Pengirim: e.user.name,
         Tujuan: e.to,
         Status: e.status_letter,
         Aksi: '',

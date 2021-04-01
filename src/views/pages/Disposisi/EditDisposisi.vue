@@ -185,6 +185,7 @@
 
       <b-row class="match-height">
         <b-col md="6">
+          <h5> Ganti File Surat</h5>
           <b-form-group
             label="File Surat"
             label-for="FileSurat"
@@ -196,6 +197,14 @@
               drop-placeholder="Drop file here..."
               @change="fileChange"
             />
+
+            <b-button
+              variant="outline-primary"
+              class="bg-gradient-primary "
+              @click.prevent="downloadItem"
+            >
+              <span class="align-middle">Download</span>
+            </b-button>
           </b-form-group>
         </b-col>
       </b-row>
@@ -234,7 +243,6 @@
                 <h2> Ketua I </h2>
                 <b-input-group
                   append="Tulis"
-                  @click="lala"
                 >
                   <b-form-input placeholder="Recipient's username" />
                 </b-input-group>
@@ -258,7 +266,6 @@
                   <h2> Kabag Produksi </h2>
                   <b-input-group
                     append="Tulis"
-                    @click="lala"
                   >
                     <b-form-input placeholder="Recipient's username" />
                   </b-input-group>
@@ -293,7 +300,6 @@
             :options="optionsPerintah"
             placeholder="as"
           />
-
         </b-col>
       </b-row>
     </b-card-code>
@@ -352,6 +358,7 @@ export default {
       Perintah: '',
       file: null,
       fileName: '',
+      url: '',
       value: ['apple', 'orange'],
       tags: [],
       optionsDeadline: [
@@ -362,7 +369,7 @@ export default {
       ],
       optionsKategori: [
         { value: '', text: 'Pilih Kategori' },
-        { value: 'UNDANGAN', text: 'Undangan' },
+        { value: 'Undangan', text: 'Undangan' },
         { value: 'Permohonan', text: 'Permohonan' },
         { value: 'CSR', text: 'CSR' },
         { value: 'Instansi Pendidikan', text: 'Instansi Pendidikan' },
@@ -422,6 +429,13 @@ export default {
       this.Pengirim = data.incoming_letter.from
       this.Deskripsi = data.incoming_letter.desc
       this.Catatan = data.incoming_letter.note
+      this.url = data.incoming_letter.file.url
+      // this.selected = data.incoming_letter.forward_incoming_letters.role_id
+      this.selected = data.incoming_letter.forward_incoming_letters.map(e => (e.role_id))
+      // console.log(data.incoming_letter.forward_incoming_letters.map(e => (e.role_id)))
+      this.options.push(data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name })))
+      console.log(this.options)
+      console.log(data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name })))
       this.tags = data.tags
       console.log(data)
         .catch(error => {
@@ -429,8 +443,14 @@ export default {
         })
     },
 
-    lala() {
-      console.log('asd')
+    downloadItem() {
+      console.log('download')
+      this.$router.go()
+      // const blob = new Blob([this.url])
+      // const link = document.createElement('a')
+      // link.href = window.URL.createObjectURL(blob)
+      // link.download = 'sample.jpg'
+      // link.click()
     },
 
     async addDispo() {

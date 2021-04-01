@@ -54,6 +54,7 @@ export default class JwtService {
               this.setToken(r.data.data.token)
               this.setRefreshToken(r.data.data.refresh_token)
               this.onAccessTokenFetched(r.data.accessToken)
+              this.$router.go()
             })
           }
           this.$router.go()
