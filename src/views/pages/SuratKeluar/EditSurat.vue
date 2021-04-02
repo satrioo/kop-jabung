@@ -289,7 +289,7 @@ export default {
       optionsStatus: [
         { value: '', text: 'Proses' },
         { value: 'Approved', text: 'Disetujui' },
-        { value: 'Ditolak', text: 'Ditolak' },
+        { value: 'Reject', text: 'Ditolak' },
       ],
     }
   },

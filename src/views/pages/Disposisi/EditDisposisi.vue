@@ -275,20 +275,6 @@
           </b-col>
         </b-row>
       </b-card-code>
-
-      <b-button
-        variant="outline-primary"
-        class="bg-gradient-primary "
-        type="submit"
-        @click.prevent="validationForm"
-      >
-        <feather-icon
-          icon="PlusIcon"
-          class="mr-50"
-        />
-        <span class="align-middle">Simpan</span>
-      </b-button>
-
     </b-card-code>
 
     <b-card-code title="Perintah Disposisi">
@@ -302,6 +288,18 @@
           />
         </b-col>
       </b-row>
+      <b-button
+        variant="outline-primary"
+        class="bg-gradient-primary "
+        type="submit"
+        @click.prevent="validationForm"
+      >
+        <feather-icon
+          icon="PlusIcon"
+          class="mr-50"
+        />
+        <span class="align-middle">Simpan</span>
+      </b-button>
     </b-card-code>
   </validation-observer>
 </template>
@@ -432,8 +430,8 @@ export default {
       this.url = data.incoming_letter.file.url
       // this.selected = data.incoming_letter.forward_incoming_letters.role_id
       this.selected = data.incoming_letter.forward_incoming_letters.map(e => (e.role_id))
-      // console.log(data.incoming_letter.forward_incoming_letters.map(e => (e.role_id)))
-      this.options.push(data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name })))
+      // this.options = data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name }))
+      // this.options.push(data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name })))
       console.log(this.options)
       console.log(data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name })))
       this.tags = data.tags
@@ -443,14 +441,38 @@ export default {
         })
     },
 
+    async getResponder() {
+      const { data } = await axios.get('api/v1/siap/disposition/responders',
+        {
+          headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+        })
+
+      this.options = data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name }))
+      console.log(data)
+        .catch(error => {
+          console.log(error)
+        })
+    },
+
     downloadItem() {
-      console.log('download')
-      this.$router.go()
-      // const blob = new Blob([this.url])
-      // const link = document.createElement('a')
-      // link.href = window.URL.createObjectURL(blob)
-      // link.download = 'sample.jpg'
-      // link.click()
+      console.log(this.url)
+      // const param = Number(this.$route.params.id)
+      axios.get(this.url,
+        {
+          responseType: 'blob',
+          headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+        })
+        .then(response => {
+          console.log(response)
+          const blob = new Blob([response.data])
+          const link = document.createElement('a')
+          link.href = URL.createObjectURL(blob)
+          link.download = this.NoSurat
+          link.click()
+          URL.revokeObjectURL(link.href)
+        }).catch(console.error)
     },
 
     async addDispo() {
@@ -524,6 +546,10 @@ export default {
   }
   .input-group-append{
     cursor: pointer;
+  }
+  .input-group-text{
+    background-image: linear-gradient(47deg, #00427A, #005ead);
+    color: #fff;
   }
 }
 </style>

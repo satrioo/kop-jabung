@@ -277,11 +277,11 @@ export default {
     statusVariant() {
       const statusColor = {
         /* eslint-disable key-spacing */
-        Process      : 'light-primary',
+        Processe      : 'light-primary',
         Proses       : 'light-success',
         Rejected     : 'light-danger',
         Resigned     : 'light-warning',
-        Applied      : 'light-info',
+        Process      : 'light-info',
         /* eslint-enable key-spacing */
       }
 
