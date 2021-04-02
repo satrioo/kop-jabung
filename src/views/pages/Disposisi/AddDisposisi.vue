@@ -2,7 +2,7 @@
   <validation-observer ref="simpleRules">
     <b-card-code title="Tulis Surat Masuk">
       <b-row class="match-height">
-        <b-col md="6">
+        <!-- <b-col md="6">
           <validation-provider
             #default="{ errors }"
             name="No. Surat"
@@ -20,7 +20,30 @@
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
+        </b-col> -->
+
+        <b-col md="12">
+          <validation-provider
+            #default="{ errors }"
+            name="Perihal"
+            rules="required"
+          >
+            <b-form-group
+              label="Perihal"
+              label-for="Perihal"
+            >
+              <b-form-input
+                id="Perihal"
+                v-model="Perihal"
+                placeholder="Input Perihal"
+              />
+            </b-form-group>
+            <small class="text-danger">{{ errors[0] }}</small>
+          </validation-provider>
         </b-col>
+      </b-row>
+
+      <b-row class="match-height">
         <b-col md="6">
           <validation-provider
             #default="{ errors }"
@@ -40,28 +63,7 @@
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
         </b-col>
-      </b-row>
 
-      <b-row class="match-height">
-        <b-col md="6">
-          <validation-provider
-            #default="{ errors }"
-            name="Perihal"
-            rules="required"
-          >
-            <b-form-group
-              label="Perihal"
-              label-for="Perihal"
-            >
-              <b-form-input
-                id="Perihal"
-                v-model="Perihal"
-                placeholder="Input Perihal"
-              />
-            </b-form-group>
-            <small class="text-danger">{{ errors[0] }}</small>
-          </validation-provider>
-        </b-col>
         <b-col md="6">
           <validation-provider
             #default="{ errors }"
@@ -327,7 +329,7 @@ export default {
         from: this.Pengirim,
         dateline: this.Deadline,
         file_id: this.fileName.id,
-        file: this.fileName.name,
+        file: this.fileName.file,
         desc: this.Deskripsi,
         note: this.Catatan,
         tags: this.tags,
@@ -355,6 +357,7 @@ export default {
           {
             position: 'bottom-right',
           })
+          this.$router.push({ name: 'proses-disposisi' })
         })
         .catch(error => {
           console.log(error)

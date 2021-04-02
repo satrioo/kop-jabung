@@ -146,6 +146,7 @@ export default {
 
       // Remove userData from localStorage
       localStorage.removeItem('userData')
+      localStorage.removeItem('permission')
 
       // Redirect to login page
       this.$router.push({ name: 'auth-login' })

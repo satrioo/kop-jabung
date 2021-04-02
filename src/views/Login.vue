@@ -286,9 +286,11 @@ export default {
             .then(response => {
               console.log(response.data.data)
               const userData = response.data.data.user
+              const permission = response.data.data.permissions
               useJwt.setToken(response.data.data.token)
               useJwt.setRefreshToken(response.data.data.refresh_token)
               localStorage.setItem('userData', JSON.stringify(userData))
+              localStorage.setItem('permission', JSON.stringify(permission))
               // this.$ability.update(userData.ability)
 
               // ? This is just for demo purpose. Don't think CASL is role based in this case, we used role in if condition just for ease
@@ -301,10 +303,10 @@ export default {
                     component: ToastificationContent,
                     position: 'top-right',
                     props: {
-                      title: `Welcome ${userData.fullName || userData.username}`,
+                      title: `Welcome ${userData.name}`,
                       icon: 'CoffeeIcon',
                       variant: 'success',
-                      text: `You have successfully logged in as ${userData.role}. Now you can start to explore!`,
+                      text: `You have successfully logged in as ${userData.role.name}. Now you can start to explore!`,
                     },
                   })
                 })

@@ -257,7 +257,7 @@ export default {
           Aksi: '<a> asdasd </a>',
         },
       ],
-      searchTerm: 'Approved',
+      searchTerm: '',
       Status: [{
         1: 'Current',
         2: 'Approved',
@@ -282,7 +282,7 @@ export default {
         Approved       : 'light-success',
         Rejected     : 'light-danger',
         Resigned     : 'light-warning',
-        Applied      : 'light-info',
+        Process      : 'light-info',
         /* eslint-enable key-spacing */
       }
 

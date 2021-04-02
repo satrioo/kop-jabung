@@ -8,3 +8,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 .btn-outline-primary:hover:not(.disabled):not(:disabled) {
   color: rgb(198, 198, 198);
 }
+
+.btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active, .btn-outline-primary:not(:disabled):not(.disabled):focus {
+  color: #fff;
+}

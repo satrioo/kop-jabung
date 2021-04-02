@@ -190,21 +190,71 @@
             label="File Surat"
             label-for="FileSurat"
           >
-            <b-form-file
-              id="FileSurat"
-              v-model="file"
-              placeholder="Input File Surat"
-              drop-placeholder="Drop file here..."
-              @change="fileChange"
-            />
 
-            <b-button
+            <div
+              v-if="gantiFile == false"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;"
+            >
+              <div
+                style="display:flex;cursor:pointer;
+              align-items: center;"
+                @click="openFile()"
+              >
+                <feather-icon
+                  icon="FileIcon"
+                  size="72"
+                />
+                <h5 class="ml-1">
+                  Open File
+                </h5>
+              </div>
+
+              <b-button
+                v-model="gantiFile"
+                variant="outline-primary"
+                class="bg-gradient-primary "
+                @click.prevent="toggleFile"
+              >
+                <span class="align-middle">Ganti File</span>
+              </b-button>
+            </div>
+
+            <div
+              v-else
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;"
+            >
+              <b-form-file
+                id="FileSurat"
+                v-model="file"
+                placeholder="Input File Surat"
+                drop-placeholder="Drop file here..."
+                @change="fileChange"
+              />
+
+              <b-button
+                v-model="gantiFile"
+                variant="outline-primary"
+                class="bg-gradient-primary mt-1"
+                @click.prevent="toggleFile"
+              >
+                <span class="align-middle">Open File</span>
+              </b-button>
+            </div>
+
+            <!-- <b-button
               variant="outline-primary"
               class="bg-gradient-primary "
               @click.prevent="downloadItem"
             >
-              <span class="align-middle">Download</span>
-            </b-button>
+              <span class="align-middle">Open File</span>
+            </b-button> -->
           </b-form-group>
         </b-col>
       </b-row>
@@ -213,38 +263,34 @@
         title="Keputusan"
         style="margin: 0 -15px;"
       >
-        <b-row class="match-height">
+        <b-row
+          class="match-height"
+        >
           <b-col md="6">
-            <!-- <div class="tanggapan">
-              <div class="avatar">
-                <img :src="require('@/assets/images/icons/user.png')">
-              </div>
-              <div class="text">
-                <h2> Ketua I </h2>
-                <h3> Belum ada keputusan disposisi. </h3>
-              </div>
-              <div>
-                <b-button
-                  variant="outline-primary"
-                  class="bg-gradient-primary "
-                  size="sm"
-                  @click.prevent="lala"
-                >
-                  <span class="align-middle">Tulis</span>
-                </b-button>
-              </div>
-            </div> -->
-
             <div class="tanggapan">
               <div class="avatar">
                 <img :src="require('@/assets/images/icons/user.png')">
               </div>
-              <div class="input">
+              <div
+                class="input"
+                :class="Jabatan === 'Decision' ? '' : 'uncomment'"
+              >
                 <h2> Ketua I </h2>
-                <b-input-group
-                  append="Tulis"
-                >
-                  <b-form-input placeholder="Recipient's username" />
+                <b-input-group>
+                  <b-form-input
+                    v-model="Komentar1"
+                    :disabled="Jabatan !== 'Decision'"
+                    placeholder="Belum ada komentar"
+                  />
+                  <b-button
+                    v-show="Jabatan === 'Decision'"
+                    variant="outline-primary"
+                    class="bg-gradient-primary"
+                    style="border-radius: 0"
+                    @click="kirimKomentar1"
+                  >
+                    <span class="align-middle">Kirim</span>
+                  </b-button>
                 </b-input-group>
               </div>
             </div>
@@ -258,16 +304,35 @@
               title="Tanggapan"
               style="margin: 0 -15px;"
             >
-              <div class="tanggapan">
+              <div
+                v-for="(option, index) in Komentar"
+                :key="option.id"
+                class="tanggapan"
+                style="margin-bottom:15px"
+              >
                 <div class="avatar">
                   <img :src="require('@/assets/images/icons/user.png')">
                 </div>
-                <div class="input">
-                  <h2> Kabag Produksi </h2>
-                  <b-input-group
-                    append="Tulis"
-                  >
-                    <b-form-input placeholder="Recipient's username" />
+                <div
+                  class="input"
+                  :class="Komentar[index].nama === userRole"
+                >
+                  <h2> {{ option.nama }} </h2>
+                  <b-input-group>
+                    <b-form-input
+                      v-model="Komentar[index].komentar"
+                      placeholder="Belum ada komentar"
+                      :disabled="Komentar[index].nama !== userRole"
+                    />
+                    <b-button
+                      v-show="Komentar[index].nama === userRole"
+                      variant="outline-primary"
+                      class="bg-gradient-primary"
+                      style="border-radius: 0"
+                      @click="kirimKomentar(index)"
+                    >
+                      <span class="align-middle">Kirim</span>
+                    </b-button>
                   </b-input-group>
                 </div>
               </div>
@@ -308,14 +373,15 @@
 /* eslint-disable vue/no-unused-components */
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
-  BAvatar, BBadge, BPagination, BFormGroup, BFormInput, BFormSelect, BDropdown, BDropdownItem,
+  BAvatar, BPagination, BFormGroup, BFormInput, BFormSelect, BDropdown, BDropdownItem,
   BButton, BRow, BCol, BFormFile, BFormTags, BFormCheckboxGroup, BFormTextarea, BInputGroup,
-  BInputGroupPrepend, BInputGroupAppend,
+
 } from 'bootstrap-vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { required, email } from '@validations'
 import axios from '@axios'
 import useJwt from '@/auth/jwt/useJwt'
+import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
 export default {
   components: {
@@ -328,7 +394,6 @@ export default {
     BCol,
     BCardCode,
     BAvatar,
-    BBadge,
     BPagination,
     BFormGroup,
     BFormInput,
@@ -340,9 +405,6 @@ export default {
     BFormCheckboxGroup,
     BFormTextarea,
     BInputGroup,
-    BInputGroupPrepend,
-    BInputGroupAppend,
-
   },
   data() {
     return {
@@ -354,7 +416,14 @@ export default {
       Deskripsi: '',
       Catatan: '',
       Perintah: '',
+      Jabatan: '',
+      Komentar1: '',
+      Komentar2: '',
+      Komentar: [],
+      Responder1: '',
+      userRole: '',
       file: null,
+      gantiFile: false,
       fileName: '',
       url: '',
       value: ['apple', 'orange'],
@@ -376,10 +445,10 @@ export default {
       ],
       selected: [],
       options: [
-        { item: '1', name: 'Kabag Produksi' },
-        { item: '2', name: 'Manajer Umum' },
-        { item: '3', name: 'Manajer Divisi Inti' },
-        { item: '4', name: 'Kabag Keuangan' },
+        // { item: '1', name: 'Kabag Produksi' },
+        // { item: '2', name: 'Manajer Umum' },
+        // { item: '3', name: 'Manajer Divisi Inti' },
+        // { item: '4', name: 'Kabag Keuangan' },
       ],
       optionsPerintah: [
         { value: '', text: 'Pilih Tujuan' },
@@ -392,16 +461,38 @@ export default {
   },
   mounted() {
     this.getDetail()
+    this.getResponder()
   },
   methods: {
     async fileChange(e) {
-      const file = e.target.files[0]
+      const files = e.target.files[0]
       const image = new FormData()
-      image.append('file', file)
-      this.file = URL.createObjectURL(file)
-      const { data } = await axios.post('/api/v1/file/upload', image)
+      image.append('file', files)
+      image.append('from', 1)
+      this.file = URL.createObjectURL(files)
+      // const { data } = await axios.post('/api/v1/file/upload', image)
+      const { data } = await axios.post('api/v1/file/upload',
+        image, {
+          headers:
+        {
+          'content-type': 'multipart/form-data; boundary=<calculated when request is sent>',
+          token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName),
+        },
+        })
       this.fileName = data
       console.log(this.fileName)
+    },
+
+    openFile() {
+      window.open(this.url, '_blank')
+    },
+
+    toggleFile() {
+      if (this.gantiFile === false) {
+        this.gantiFile = true
+      } else {
+        this.gantiFile = false
+      }
     },
 
     validationForm() {
@@ -412,8 +503,95 @@ export default {
       })
     },
 
+    async kirimKomentar1() {
+      const idUser = JSON.parse(localStorage.getItem('userData'))
+      await axios.post(`api/v1/siap/disposition/comment/${idUser.role.id}`, {
+        comment: this.Komentar1,
+      }, {
+        headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+      })
+        .then(response => {
+          console.log(response)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Success',
+              icon: 'InfoIcon',
+              text: response.data.message,
+              variant: 'success',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
+        })
+        .catch(error => {
+          console.log('asdasd', error.response)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Error',
+              icon: 'InfoIcon',
+              text: error.response.data.error.message,
+              variant: 'danger',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
+        })
+    },
+
+    async kirimKomentar(n) {
+      const idUser = JSON.parse(localStorage.getItem('userData'))
+      console.log('parse', idUser.role.id)
+      console.log('parse2', n)
+      // const id = n.id
+      console.log('parse3', this.Komentar[n])
+      console.log('parse4', this.Komentar1)
+      // const param = Number(this.$route.params.id)
+      await axios.post(`api/v1/siap/disposition/comment/${this.Komentar[n].id}`, {
+        comment: this.Komentar[n].komentar,
+      }, {
+        headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+      })
+        .then(response => {
+          console.log(response)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Success',
+              icon: 'InfoIcon',
+              text: response.data.message,
+              variant: 'success',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
+        })
+        .catch(error => {
+          console.log('asdasd', error.response)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Error',
+              icon: 'InfoIcon',
+              text: error.response.data.error.message,
+              variant: 'danger',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
+        })
+    },
+
     async getDetail() {
       const param = Number(this.$route.params.id)
+      const roleName = JSON.parse(localStorage.getItem('userData'))
       const { data } = await axios.get(`api/v1/siap/disposition/inbox/${param}`,
         {
           headers:
@@ -423,19 +601,22 @@ export default {
       this.NoSurat = data.incoming_letter.code
       this.Deadline = data.incoming_letter.dateline
       this.Perihal = data.incoming_letter.title
+
       this.Kategori = data.incoming_letter.category.name
       this.Pengirim = data.incoming_letter.from
       this.Deskripsi = data.incoming_letter.desc
       this.Catatan = data.incoming_letter.note
-      this.url = data.incoming_letter.file.url
+      this.userRole = roleName.role.name
+
+      this.url = data.incoming_letter.file !== null ? data.incoming_letter.file.url : 'tes'
+      this.Jabatan = data.reciver_type
+      this.Komentar1 = data.incoming_letter.decisions.comment
+      this.Komentar = data.incoming_letter.responders.map(e => ({ id: e.id, nama: e.role_name, komentar: e.comment }))
       // this.selected = data.incoming_letter.forward_incoming_letters.role_id
-      this.selected = data.incoming_letter.forward_incoming_letters.map(e => (e.role_id))
+      this.selected = data.incoming_letter.responders.map(e => (e.role_id))
       // this.options = data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name }))
       // this.options.push(data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name })))
-      console.log(this.options)
-      console.log(data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name })))
       this.tags = data.tags
-      console.log(data)
         .catch(error => {
           console.log(error)
         })
@@ -447,9 +628,8 @@ export default {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
-
-      this.options = data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name }))
-      console.log(data)
+      this.options = data.map(e => ({ item: e.id, name: e.name }))
+      console.log('option', this.option)
         .catch(error => {
           console.log(error)
         })
@@ -528,6 +708,13 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  .uncomment{
+    input{
+      border: unset;
+      border-left: solid 1px;
+      border-radius: 0;
+    }
+  }
   .avatar{
     width: 80px;
     img{

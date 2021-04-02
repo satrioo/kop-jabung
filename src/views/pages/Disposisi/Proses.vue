@@ -71,10 +71,34 @@
         </span>
 
         <!-- Column: Status -->
-        <span v-else-if="props.column.field === 'Status'">
+        <span
+          v-else-if="props.column.field === 'Status'"
+          v-b-modal.modal-center
+          :title="props.row.Komentar"
+        >
           <b-badge :variant="statusVariant(props.row.Status)">
             {{ props.row.Status }}
           </b-badge>
+
+          <!-- <b-modal
+            id="modal-center"
+            centered
+            title="Status Komentar"
+            ok-only
+            ok-title="Ok"
+          >
+            <b-card-text>
+              <div>
+                <div
+                  v-for="option in props.row.Komentar"
+                  :key="option.id"
+                  class="tootip"
+                >
+                  <p style="margin:0"> {{ option.nama }} : {{ option.komentar === null ? 'belum komentar' : option.komentar }} </p>
+                </div>
+              </div>
+            </b-card-text>
+          </b-modal> -->
         </span>
 
         <!-- Column: Action -->
@@ -173,10 +197,11 @@
 
 <script>
 /* eslint-disable no-unused-vars */
+/* eslint-disable vue/no-unused-components */
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
   BAvatar, BBadge, BPagination, BFormGroup, BFormInput, BFormSelect, BDropdown, BDropdownItem,
-  BButton, BLink,
+  BButton, BLink, VBTooltip, VBModal,
 } from 'bootstrap-vue'
 import { VueGoodTable } from 'vue-good-table'
 import axios from '@axios'
@@ -198,6 +223,12 @@ export default {
     BDropdown,
     BDropdownItem,
     BButton,
+    VBModal,
+    VBTooltip,
+  },
+  directives: {
+    'b-tooltip': VBTooltip,
+    'b-modal': VBModal,
   },
   data() {
     return {
@@ -243,6 +274,7 @@ export default {
         Pengirim: '',
         Status: '',
         Aksi: '',
+        Komentar: [],
       }],
       rows: [
         {
@@ -311,6 +343,7 @@ export default {
         Deadline: e.incoming_letter.dateline,
         Pengirim: e.incoming_letter.from,
         Status: e.incoming_letter.status_letter,
+        Komentar: e.incoming_letter.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })),
         Aksi: '',
       }))
       console.log('datarows', this.dataRows)

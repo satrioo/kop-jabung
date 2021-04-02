@@ -262,7 +262,7 @@ export default {
           Aksi: '<a> asdasd </a>',
         },
       ],
-      searchTerm: '',
+      searchTerm: 'Process',
       Status: [{
         1: 'Process',
         2: 'Approved',
