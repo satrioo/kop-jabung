@@ -67,15 +67,28 @@ export default [
     },
   },
   {
-    // eslint-disable-next-line no-undef
     path: '/disposisi/edit-disposisi/:id',
-    name: 'tambah-disposisi',
+    name: 'edit-disposisi',
     component: () => import('@/views/pages/Disposisi/EditDisposisi.vue'),
     meta: {
-      pageTitle: 'Tambah Disposisi',
+      pageTitle: 'Edit Disposisi',
       breadcrumb: [
         {
-          text: 'Tambah Disposisi',
+          text: 'Edit Disposisi',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/disposisi/detail-disposisi/:id',
+    name: 'detail-disposisi',
+    component: () => import('@/views/pages/Disposisi/EditDisposisi.vue'),
+    meta: {
+      pageTitle: 'Detail Disposisi',
+      breadcrumb: [
+        {
+          text: 'Detail Disposisi',
           active: true,
         },
       ],

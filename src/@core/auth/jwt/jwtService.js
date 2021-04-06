@@ -52,7 +52,7 @@ export default class JwtService {
               // Update accessToken in localStorage
               this.setToken(r.data.data.token)
               this.setRefreshToken(r.data.data.refresh_token)
-              this.onAccessTokenFetched(r.data.accessToken)
+              // this.onAccessTokenFetched(r.data.accessToken)
               this.$router.go()
             })
           }

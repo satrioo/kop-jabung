@@ -4,10 +4,18 @@
 
       <!-- Brand logo-->
       <b-link class="brand-logo">
-        <vuexy-logo />
-        <h2 class="brand-text text-primary ml-1">
-          Vuexy
-        </h2>
+        <!-- <vuexy-logo /> -->
+
+        <b-img
+          :src="require('@/assets/images/logo/logo-kop.png')"
+          alt="logo"
+          width="200"
+          style="height: intrinsic;"
+        />
+
+        <!-- <h2 class="brand-text text-primary ml-1">
+          Vuexy 12
+        </h2> -->
       </b-link>
       <!-- /Brand logo-->
 
@@ -41,13 +49,13 @@
             class="mb-1 font-weight-bold"
             title-tag="h2"
           >
-            Welcome to Vuexy! 👋
+            Welcome to KAN-Jabung 👋
           </b-card-title>
           <b-card-text class="mb-2">
             Please sign-in to your account and start the adventure
           </b-card-text>
 
-          <b-alert
+          <!-- <b-alert
             variant="primary"
             show
           >
@@ -66,7 +74,7 @@
               class="position-absolute"
               style="top: 10; right: 10;"
             />
-          </b-alert>
+          </b-alert> -->
 
           <!-- form -->
           <validation-observer
@@ -212,6 +220,7 @@
 <script>
 /* eslint-disable global-require */
 /* eslint-disable no-unused-vars */
+/* eslint-disable vue/no-unused-components */
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import VuexyLogo from '@core/layouts/components/Logo.vue'
 import {

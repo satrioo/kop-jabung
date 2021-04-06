@@ -266,7 +266,7 @@ export default {
       Status: [{
         1: 'Process',
         2: 'Approved',
-        3: 'Reject',
+        3: 'Failed',
         4: 'Resigned',
         5: 'Applied',
       },
@@ -283,9 +283,9 @@ export default {
     statusVariant() {
       const statusColor = {
         /* eslint-disable key-spacing */
-        Processe      : 'light-primary',
-        Approved       : 'light-success',
-        Reject     : 'light-danger',
+        Processe     : 'light-primary',
+        Approved     : 'light-success',
+        Failed       : 'light-danger',
         Resigned     : 'light-warning',
         Process      : 'light-info',
         /* eslint-enable key-spacing */

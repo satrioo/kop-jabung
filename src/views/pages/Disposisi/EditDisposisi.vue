@@ -1,6 +1,9 @@
 <template>
   <validation-observer ref="simpleRules">
-    <b-card-code title="Tulis Surat Masuk">
+    <b-card-code
+      title="Tulis Surat Masuk"
+      :class="$route.name == 'detail-disposisi' ? 'detail-dispo' : ''"
+    >
       <b-row class="match-height">
         <b-col md="6">
           <validation-provider
@@ -313,9 +316,13 @@
                 <div class="avatar">
                   <img :src="require('@/assets/images/icons/user.png')">
                 </div>
-                <div
+                <!-- <div
                   class="input"
                   :class="Komentar[index].nama === userRole"
+                > -->
+                <div
+                  class="input"
+                  :class="Jabatan === 'Responder' ? '' : 'uncomment'"
                 >
                   <h2> {{ option.nama }} </h2>
                   <b-input-group>
@@ -719,6 +726,7 @@ export default {
     width: 80px;
     img{
       width: 100%;
+      height: intrinsic;
     };
   }
   h2{
@@ -737,6 +745,14 @@ export default {
   .input-group-text{
     background-image: linear-gradient(47deg, #00427A, #005ead);
     color: #fff;
+  }
+}
+ .detail-dispo{
+  .form-control, .custom-select{
+    border: unset;
+    border-bottom: 1px solid #d8d6de;
+    border-radius: 0;
+    pointer-events: none;
   }
 }
 </style>

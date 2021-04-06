@@ -60,14 +60,15 @@
 
         <!-- Column: Name -->
         <span
-          v-if="props.column.field === 'fullName'"
+          v-if="props.column.field === 'NoDisposisi'"
           class="text-nowrap"
         >
-          <b-avatar
-            :src="props.row.avatar"
-            class="mx-1"
-          />
-          <span class="text-nowrap">{{ props.row.fullName }}</span>
+          <span
+            v-b-tooltip.hover.right="'Klik untuk lihat Detail'"
+            class="text-nowrap link-no"
+            variant="outline-primary"
+            @click="detailDisposisi(props.row.id)"
+          >{{ props.row.NoDisposisi }}</span>
         </span>
 
         <!-- Column: Status -->
@@ -79,26 +80,6 @@
           <b-badge :variant="statusVariant(props.row.Status)">
             {{ props.row.Status }}
           </b-badge>
-
-          <!-- <b-modal
-            id="modal-center"
-            centered
-            title="Status Komentar"
-            ok-only
-            ok-title="Ok"
-          >
-            <b-card-text>
-              <div>
-                <div
-                  v-for="option in props.row.Komentar"
-                  :key="option.id"
-                  class="tootip"
-                >
-                  <p style="margin:0"> {{ option.nama }} : {{ option.komentar === null ? 'belum komentar' : option.komentar }} </p>
-                </div>
-              </div>
-            </b-card-text>
-          </b-modal> -->
         </span>
 
         <!-- Column: Action -->
@@ -309,9 +290,9 @@ export default {
     statusVariant() {
       const statusColor = {
         /* eslint-disable key-spacing */
-        Processe      : 'light-primary',
+        Processe     : 'light-primary',
         Proses       : 'light-success',
-        Rejected     : 'light-danger',
+        Failed       : 'light-danger',
         Resigned     : 'light-warning',
         Process      : 'light-info',
         /* eslint-enable key-spacing */
@@ -325,8 +306,10 @@ export default {
   },
   methods: {
     editDisposisi(e) {
-      console.log(e)
       window.location.href = `edit-disposisi/${e}`
+    },
+    detailDisposisi(e) {
+      window.location.href = `detail-disposisi/${e}`
     },
     async getDisposisi() {
       const { data } = await axios.get('api/v1/siap/disposition/inboxs',
@@ -358,6 +341,11 @@ export default {
 <style lang="scss" >
 @import '@core/scss/vue/libs/vue-good-table.scss';
 .nopad{
-    padding: 0;
+  padding: 0;
+}
+.link-no{
+  border-bottom: solid 1px #c5c5c5;
+  padding-bottom: 3px;
+  cursor: pointer;
 }
 </style>

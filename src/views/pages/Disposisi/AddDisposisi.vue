@@ -141,6 +141,20 @@
               />
             </b-form-group>
           </b-row>
+          <b-form-group
+            label="File Surat"
+            label-for="FileSurat"
+            class="mt-2"
+          >
+            <!-- Styled -->
+            <b-form-file
+              id="FileSurat"
+              v-model="file"
+              placeholder="Input File Surat"
+              drop-placeholder="Drop file here..."
+              @change="fileChange"
+            />
+          </b-form-group>
         </b-col>
         <b-col md="6">
           <label for="textarea-default">Deskripsi</label>
@@ -187,17 +201,44 @@
 
       <b-row class="match-height">
         <b-col md="6">
-          <b-form-group
+          <!-- <b-form-group
             label="File Surat"
             label-for="FileSurat"
           >
-            <!-- Styled -->
             <b-form-file
               id="FileSurat"
               v-model="file"
               placeholder="Input File Surat"
               drop-placeholder="Drop file here..."
               @change="fileChange"
+            />
+          </b-form-group> -->
+        </b-col>
+
+        <b-col md="6">
+          <b-form-group
+            label="Keputusan"
+            label-for="Keputusan"
+          >
+            <v-select
+              v-model="selectedKeputusan"
+              :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+              multiple
+              label="text"
+              :options="optionsDeadline"
+            />
+          </b-form-group>
+
+          <b-form-group
+            label="Private"
+            label-for="private"
+            class="mt-2"
+          >
+            <b-form-checkbox
+              checked="false"
+              name="check-button"
+              switch
+              inline
             />
           </b-form-group>
         </b-col>
@@ -225,8 +266,9 @@
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
   BAvatar, BBadge, BPagination, BFormGroup, BFormInput, BFormSelect, BDropdown, BDropdownItem,
-  BButton, BRow, BCol, BFormFile, BFormTags, BFormCheckboxGroup, BFormTextarea,
+  BButton, BRow, BCol, BFormFile, BFormTags, BFormCheckboxGroup, BFormTextarea, BFormCheckbox,
 } from 'bootstrap-vue'
+import vSelect from 'vue-select'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { required, email } from '@validations'
 import axios from '@axios'
@@ -256,6 +298,8 @@ export default {
     BFormTags,
     BFormCheckboxGroup,
     BFormTextarea,
+    vSelect,
+    BFormCheckbox,
   },
   data() {
     return {
@@ -270,6 +314,11 @@ export default {
       fileName: '',
       value: ['apple', 'orange'],
       tags: ['apple', 'orange'],
+      dir: 'ltr',
+      selectedKeputusan: [
+        { value: 'OneDay', text: 'OneDay' },
+        { value: 'TwoDay', text: 'TwoDay' },
+      ],
       optionsDeadline: [
         { value: '', text: 'Pilih Deadline' },
         { value: 'OneDay', text: 'OneDay' },
@@ -382,6 +431,7 @@ export default {
 </script>
 
 <style lang="scss" >
+@import '@core/scss/vue/libs/vue-select.scss';
 .row{
   margin-bottom: 20px;
 }
