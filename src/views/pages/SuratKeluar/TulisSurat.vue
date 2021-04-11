@@ -240,7 +240,7 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
         .then(response => {
-          console.log(response)
+          // console.log(response)
           this.$toast({
             component: ToastificationContent,
             props: {
@@ -255,7 +255,18 @@ export default {
           })
         })
         .catch(error => {
-          console.log(error)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Success',
+              icon: 'InfoIcon',
+              text: error.data.message,
+              variant: 'success',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
         })
     },
   },
