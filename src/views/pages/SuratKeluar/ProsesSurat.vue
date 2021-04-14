@@ -242,7 +242,7 @@ export default {
       dataRows: [{
         id: '',
         NoSurat: '',
-        Kategori: '',
+        // Kategori: '',
         Perihal: '',
         Waktu: '',
         Pengirim: '',

@@ -142,7 +142,7 @@
 
       <b-button
         variant="outline-primary"
-        class="bg-gradient-primary "
+        class="bg-gradient-primary mt-2"
         type="submit"
         @click.prevent="validationForm"
       >

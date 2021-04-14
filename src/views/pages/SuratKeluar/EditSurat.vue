@@ -134,6 +134,7 @@
           >
             <quill-editor
               v-model="original_letter"
+              disabled
               :options="snowOption"
               style="height: 250px"
             />
@@ -323,7 +324,7 @@ export default {
       this.title = data.title
       this.Perihal = data.title
       this.original_letter = data.original_letter
-      this.validated_letter = data.validated_letter
+      this.validated_letter = data.validated_letter === null ? data.original_letter : data.validated_letter
       this.status = data.status_letter
       console.log(data)
         .catch(error => {

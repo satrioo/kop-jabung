@@ -196,29 +196,10 @@
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
 
-        </b-col>
-      </b-row>
-
-      <b-row class="match-height">
-        <b-col md="6">
-          <!-- <b-form-group
-            label="File Surat"
-            label-for="FileSurat"
-          >
-            <b-form-file
-              id="FileSurat"
-              v-model="file"
-              placeholder="Input File Surat"
-              drop-placeholder="Drop file here..."
-              @change="fileChange"
-            />
-          </b-form-group> -->
-        </b-col>
-
-        <b-col md="6">
           <b-form-group
             label="Keputusan"
             label-for="Keputusan"
+            class="mt-2"
           >
             <v-select
               v-model="selectedKeputusan"
@@ -235,12 +216,14 @@
             class="mt-2"
           >
             <b-form-checkbox
+              v-model="privates"
               checked="false"
               name="check-button"
               switch
               inline
             />
           </b-form-group>
+
         </b-col>
       </b-row>
 
@@ -312,6 +295,7 @@ export default {
       Catatan: '',
       file: null,
       fileName: '',
+      privates: false,
       value: ['apple', 'orange'],
       tags: ['apple', 'orange'],
       dir: 'ltr',
@@ -382,12 +366,9 @@ export default {
         desc: this.Deskripsi,
         note: this.Catatan,
         tags: this.tags,
-        forward_to: {
-          responders: [
-            this.selected,
-          ],
-        },
-
+        private: this.privates,
+        users_decision: this.selectedKeputusan,
+        users_responders: this.selected,
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
