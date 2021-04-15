@@ -34,10 +34,10 @@
               label="Deadline"
               label-for="Deadline"
             >
-              <b-form-input
-                id="Deadline"
+              <b-form-select
                 v-model="Deadline"
-                placeholder="Input Deadline"
+                :options="optionsDeadline"
+                placeholder="Pilih Deadline2"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -475,6 +475,7 @@ export default {
       Komentar: [],
       Responder1: '',
       userRole: '',
+      selectedFile: '',
       selectedKeputusan: [],
       selectedViewers: [],
       privates: false,
@@ -489,7 +490,6 @@ export default {
       value: ['apple', 'orange'],
       tags: [],
       optionsDeadline: [
-        { value: '', text: 'Pilih Deadline' },
         { value: 'OneDay', text: 'OneDay' },
         { value: 'TwoDay', text: 'TwoDay' },
         { value: 'ThreeDay', text: 'ThreeDay' },
@@ -654,7 +654,9 @@ export default {
         })
 
       this.NoSurat = data.disposition.code
-      this.Deadline = data.disposition.dateline
+      // this.Deadline = data.disposition.dateline
+      const date = data.disposition.dateline
+      this.optionsDeadline.push({ text: date, value: '' })
       this.Perihal = data.disposition.title
 
       this.Kategori = data.disposition.category.name
@@ -662,23 +664,24 @@ export default {
       this.Deskripsi = data.disposition.desc
       this.Catatan = data.disposition.note
       this.userRole = roleName.role.name
-
+      this.selectedFile = data.disposition.file.id
       this.url = data.disposition.file !== null ? data.disposition.file.url : 'tes'
       this.Jabatan = data.reciver_type
       this.Komentar1 = data.decision.comment
       this.Komentar = data.responders.map(e => ({ id: e.user_id, nama: e.role_name, komentar: e.comment }))
       this.selected = data.responders.map(e => (e.user_id))
-      this.selectedKeputusan = data.decision.role_name
+      this.selectedKeputusan.push({ text: data.decision.role_name, value: data.decision.user_id })
       this.selectedViewers = data.supervisors.map(e => ({ value: e.id, text: e.role_name }))
-      this.privates = data.disposition.private
+
+      this.privates = data.disposition.private !== 0
 
       // this.options = data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name }))
       // this.options.push(data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name })))
       this.tags = data.disposition.tags.map(e => (e.name))
-      console.log('asd', this.tags)
-        .catch(error => {
-          console.log(error)
-        })
+      // console.log('asd', this.tags)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
     },
 
     async getResponder() {
@@ -717,20 +720,25 @@ export default {
     },
 
     async addDispo() {
+      console.log(this.privates)
       await axios.post('api/v1/siap/disposition/add', {
         cat_name: this.Kategori,
         title: this.Perihal,
         from: this.Pengirim,
         dateline: this.Deadline,
-        file: this.fileName.file,
+        // file: this.fileName.file,
+        file_id: this.fileName === '' ? this.selectedFile : this.fileName.id,
         desc: this.Deskripsi,
         note: this.Catatan,
+        private: this.privates,
         tags: this.tags,
-        forward_to: {
-          responders: [
-            this.selected,
-          ],
-        },
+        user_decision: this.selectedKeputusan[0].value,
+        user_responders: this.selected,
+        // forward_to: {
+        //   responders: [
+        //     this.selected,
+        //   ],
+        // },
 
       }, {
         headers:

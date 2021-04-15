@@ -328,10 +328,10 @@ export default {
         // Komentar: e.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })),
         Aksi: '',
       }))
-      console.log('datarows', this.dataRows)
-        .catch(error => {
-          console.log(error)
-        })
+      // console.log('datarows', this.dataRows)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
     },
   },
 }
