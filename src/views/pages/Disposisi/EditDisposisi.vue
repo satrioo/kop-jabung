@@ -183,6 +183,49 @@
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
 
+          <b-form-group
+            label="Keputusan"
+            label-for="Keputusan"
+            class="mt-2"
+          >
+            <v-select
+              v-model="selectedKeputusan"
+              :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+              label="text"
+              placeholder="Pilih Keputusan"
+              :options="optionsKeputusan"
+            />
+          </b-form-group>
+
+          <b-form-group
+            label="Untuk Dilihat"
+            label-for="dilihat"
+            class="mt-2"
+          >
+            <v-select
+              v-model="selectedViewers"
+              :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+              label="text"
+              placeholder="Pilih Viewers"
+              :options="optionsViewers"
+              multiple
+            />
+          </b-form-group>
+
+          <b-form-group
+            label="Private"
+            label-for="private"
+            class="mt-2"
+          >
+            <b-form-checkbox
+              v-model="privates"
+              checked="false"
+              name="check-button"
+              switch
+              inline
+            />
+          </b-form-group>
+
         </b-col>
       </b-row>
 
@@ -382,10 +425,11 @@ import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
   BAvatar, BPagination, BFormGroup, BFormInput, BFormSelect, BDropdown, BDropdownItem,
   BButton, BRow, BCol, BFormFile, BFormTags, BFormCheckboxGroup, BFormTextarea, BInputGroup,
-
+  BFormCheckbox,
 } from 'bootstrap-vue'
 import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { required, email } from '@validations'
+import vSelect from 'vue-select'
 import axios from '@axios'
 import useJwt from '@/auth/jwt/useJwt'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
@@ -412,6 +456,8 @@ export default {
     BFormCheckboxGroup,
     BFormTextarea,
     BInputGroup,
+    vSelect,
+    BFormCheckbox,
   },
   data() {
     return {
@@ -429,10 +475,17 @@ export default {
       Komentar: [],
       Responder1: '',
       userRole: '',
+      selectedKeputusan: [],
+      selectedViewers: [],
+      privates: false,
       file: null,
       gantiFile: false,
       fileName: '',
       url: '',
+      optionsKeputusan: [],
+      optionsViewers: [
+        { value: '', text: '' },
+      ],
       value: ['apple', 'orange'],
       tags: [],
       optionsDeadline: [
@@ -452,10 +505,7 @@ export default {
       ],
       selected: [],
       options: [
-        // { item: '1', name: 'Kabag Produksi' },
-        // { item: '2', name: 'Manajer Umum' },
-        // { item: '3', name: 'Manajer Divisi Inti' },
-        // { item: '4', name: 'Kabag Keuangan' },
+
       ],
       optionsPerintah: [
         { value: '', text: 'Pilih Tujuan' },
@@ -467,8 +517,8 @@ export default {
     }
   },
   mounted() {
-    this.getDetail()
     this.getResponder()
+    this.getDetail()
   },
   methods: {
     async fileChange(e) {
@@ -534,7 +584,6 @@ export default {
           })
         })
         .catch(error => {
-          console.log('asdasd', error.response)
           this.$toast({
             component: ToastificationContent,
             props: {
@@ -580,7 +629,6 @@ export default {
           })
         })
         .catch(error => {
-          console.log('asdasd', error.response)
           this.$toast({
             component: ToastificationContent,
             props: {
@@ -605,25 +653,29 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
 
-      this.NoSurat = data.incoming_letter.code
-      this.Deadline = data.incoming_letter.dateline
-      this.Perihal = data.incoming_letter.title
+      this.NoSurat = data.disposition.code
+      this.Deadline = data.disposition.dateline
+      this.Perihal = data.disposition.title
 
-      this.Kategori = data.incoming_letter.category.name
-      this.Pengirim = data.incoming_letter.from
-      this.Deskripsi = data.incoming_letter.desc
-      this.Catatan = data.incoming_letter.note
+      this.Kategori = data.disposition.category.name
+      this.Pengirim = data.disposition.from
+      this.Deskripsi = data.disposition.desc
+      this.Catatan = data.disposition.note
       this.userRole = roleName.role.name
 
-      this.url = data.incoming_letter.file !== null ? data.incoming_letter.file.url : 'tes'
+      this.url = data.disposition.file !== null ? data.disposition.file.url : 'tes'
       this.Jabatan = data.reciver_type
-      this.Komentar1 = data.incoming_letter.decisions.comment
-      this.Komentar = data.incoming_letter.responders.map(e => ({ id: e.id, nama: e.role_name, komentar: e.comment }))
-      // this.selected = data.incoming_letter.forward_incoming_letters.role_id
-      this.selected = data.incoming_letter.responders.map(e => (e.role_id))
-      // this.options = data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name }))
-      // this.options.push(data.incoming_letter.forward_incoming_letters.map(e => ({ item: e.role_id, name: e.role_name })))
-      this.tags = data.tags
+      this.Komentar1 = data.decision.comment
+      this.Komentar = data.responders.map(e => ({ id: e.user_id, nama: e.role_name, komentar: e.comment }))
+      this.selected = data.responders.map(e => (e.user_id))
+      this.selectedKeputusan = data.decision.role_name
+      this.selectedViewers = data.supervisors.map(e => ({ value: e.id, text: e.role_name }))
+      this.privates = data.disposition.private
+
+      // this.options = data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name }))
+      // this.options.push(data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name })))
+      this.tags = data.disposition.tags.map(e => (e.name))
+      console.log('asd', this.tags)
         .catch(error => {
           console.log(error)
         })
@@ -636,6 +688,8 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
       this.options = data.map(e => ({ item: e.id, name: e.name }))
+      this.optionsKeputusan = data.map(e => ({ value: e.id, text: e.name }))
+      this.optionsViewers = data.map(e => ({ value: e.id, text: e.name }))
       console.log('option', this.option)
         .catch(error => {
           console.log(error)
@@ -694,6 +748,7 @@ export default {
 </script>
 
 <style lang="scss" >
+@import '@core/scss/vue/libs/vue-select.scss';
 .row{
   margin-bottom: 20px;
 }

@@ -269,7 +269,7 @@ export default {
           Aksi: '<a> asdasd </a>',
         },
       ],
-      searchTerm: '',
+      searchTerm: 'Process',
       Status: [{
         1: 'Process',
         2: 'Proses',
@@ -317,16 +317,15 @@ export default {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
-
       this.dataRows = data.data.map(e => ({
         id: e.id,
-        NoDisposisi: e.incoming_letter.code,
-        Perihal: e.incoming_letter.title,
-        Waktu: e.incoming_letter.date,
-        Deadline: e.incoming_letter.dateline,
-        Pengirim: e.incoming_letter.from,
-        Status: e.incoming_letter.status_letter,
-        Komentar: e.incoming_letter.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })),
+        NoDisposisi: e.disposition.code,
+        Perihal: e.disposition.title,
+        Waktu: e.disposition.date,
+        Deadline: e.disposition.dateline,
+        Pengirim: e.disposition.from,
+        Status: e.disposition.status_letter,
+        // Komentar: e.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })),
         Aksi: '',
       }))
       console.log('datarows', this.dataRows)

@@ -204,9 +204,24 @@
             <v-select
               v-model="selectedKeputusan"
               :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
-              multiple
               label="text"
-              :options="optionsDeadline"
+              placeholder="Pilih Keputusan"
+              :options="optionsKeputusan"
+            />
+          </b-form-group>
+
+          <b-form-group
+            label="Untuk Dilihat"
+            label-for="dilihat"
+            class="mt-2"
+          >
+            <v-select
+              v-model="selectedViewers"
+              :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+              label="text"
+              placeholder="Pilih Viewers"
+              :options="optionsViewers"
+              multiple
             />
           </b-form-group>
 
@@ -296,13 +311,11 @@ export default {
       file: null,
       fileName: '',
       privates: false,
-      value: ['apple', 'orange'],
-      tags: ['apple', 'orange'],
+      value: [],
+      tags: [],
       dir: 'ltr',
-      selectedKeputusan: [
-        { value: 'OneDay', text: 'OneDay' },
-        { value: 'TwoDay', text: 'TwoDay' },
-      ],
+      selectedKeputusan: [],
+      selectedViewers: [],
       optionsDeadline: [
         { value: '', text: 'Pilih Deadline' },
         { value: 'OneDay', text: 'OneDay' },
@@ -322,10 +335,17 @@ export default {
       options: [
         { item: '', name: '' },
       ],
+      optionsKeputusan: [
+        { value: '', text: '' },
+      ],
+      optionsViewers: [
+        { value: '', text: '' },
+      ],
     }
   },
   mounted() {
     this.getRole()
+    this.getDecision()
   },
   methods: {
     async fileChange(e) {
@@ -356,19 +376,21 @@ export default {
     },
 
     async addDispo() {
+      console.log('adding')
       await axios.post('api/v1/siap/disposition/add', {
-        cat_name: this.Kategori,
         title: this.Perihal,
         from: this.Pengirim,
         dateline: this.Deadline,
+        cat_name: this.Kategori,
         file_id: this.fileName.id,
-        file: this.fileName.file,
+        // file: this.fileName.file,
+        tags: this.tags,
         desc: this.Deskripsi,
         note: this.Catatan,
-        tags: this.tags,
         private: this.privates,
-        users_decision: this.selectedKeputusan,
-        users_responders: this.selected,
+        user_decision: this.selectedKeputusan.value,
+        user_responders: this.selected,
+        user_supervisors: this.selectedViewers.value,
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
@@ -402,10 +424,19 @@ export default {
         })
 
       this.options = data.map(e => ({ item: e.id, name: e.name }))
-      console.log('datarows', data)
-        .catch(error => {
-          console.log(error)
+      this.optionsViewers = data.map(e => ({ value: e.id, text: e.name }))
+    },
+
+    async getDecision() {
+      const { data } = await axios.get('api/v1/siap/disposition/responders',
+        {
+          headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+          params:
+        { decision_only: 1 },
         })
+
+      this.optionsKeputusan = data.map(e => ({ value: e.id, text: e.name }))
     },
   },
 }
