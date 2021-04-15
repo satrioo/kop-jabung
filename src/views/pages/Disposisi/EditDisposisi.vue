@@ -106,25 +106,6 @@
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
 
-          <!-- <validation-provider
-            #default="{ errors }"
-            name="FileSurat"
-            rules="required"
-          >
-            <b-form-group
-              class="mt-2"
-              label="Divisi/ Bagian/Unit Terkait"
-              label-for="divisi"
-            >
-              <b-form-tags
-                v-model="value"
-                input-id="tags-basic"
-                placeholder="Tambah Tag"
-              />
-            </b-form-group>
-            <small class="text-danger">{{ errors[0] }}</small>
-          </validation-provider> -->
-
           <b-row
             class="match-height mt-2"
             style="padding: 0px 20px 0px;"
@@ -143,6 +124,7 @@
             </b-form-group>
           </b-row>
         </b-col>
+
         <b-col md="6">
           <label for="textarea-default">Deskripsi</label>
           <b-form-textarea
@@ -245,8 +227,7 @@
                 align-items: center;"
             >
               <div
-                style="display:flex;cursor:pointer;
-              align-items: center;"
+                class="open-file"
                 @click="openFile()"
               >
                 <feather-icon
@@ -294,13 +275,6 @@
               </b-button>
             </div>
 
-            <!-- <b-button
-              variant="outline-primary"
-              class="bg-gradient-primary "
-              @click.prevent="downloadItem"
-            >
-              <span class="align-middle">Open File</span>
-            </b-button> -->
           </b-form-group>
         </b-col>
       </b-row>
@@ -319,17 +293,17 @@
               </div>
               <div
                 class="input"
-                :class="Jabatan === 'Decision' ? '' : 'uncomment'"
+                :class="Jabatan === selectedKeputusan[0].text ? '' : 'uncomment'"
               >
-                <h2> Ketua I </h2>
+                <h2> {{ selectedKeputusan[0].text }} </h2>
                 <b-input-group>
                   <b-form-input
                     v-model="Komentar1"
-                    :disabled="Jabatan !== 'Decision'"
+                    :disabled="Jabatan !== selectedKeputusan[0].text"
                     placeholder="Belum ada komentar"
                   />
                   <b-button
-                    v-show="Jabatan === 'Decision'"
+                    v-show="Jabatan === selectedKeputusan[0].text"
                     variant="outline-primary"
                     class="bg-gradient-primary"
                     style="border-radius: 0"
@@ -359,23 +333,20 @@
                 <div class="avatar">
                   <img :src="require('@/assets/images/icons/user.png')">
                 </div>
-                <!-- <div
-                  class="input"
-                  :class="Komentar[index].nama === userRole"
-                > -->
+
                 <div
                   class="input"
-                  :class="Jabatan === 'Responder' ? '' : 'uncomment'"
+                  :class="Jabatan === Komentar[index].nama ? '' : 'uncomment'"
                 >
                   <h2> {{ option.nama }} </h2>
                   <b-input-group>
                     <b-form-input
                       v-model="Komentar[index].komentar"
                       placeholder="Belum ada komentar"
-                      :disabled="Komentar[index].nama !== userRole"
+                      :disabled="Komentar[index].nama !== Jabatan"
                     />
                     <b-button
-                      v-show="Komentar[index].nama === userRole"
+                      v-show="Komentar[index].nama === Jabatan"
                       variant="outline-primary"
                       class="bg-gradient-primary"
                       style="border-radius: 0"
@@ -389,6 +360,18 @@
             </b-card-code>
           </b-col>
         </b-row>
+        <b-button
+          variant="outline-primary"
+          class="bg-gradient-primary "
+          type="submit"
+          @click.prevent="validationForm"
+        >
+          <feather-icon
+            icon="SaveIcon"
+            class="mr-50"
+          />
+          <span class="align-middle">Simpan</span>
+        </b-button>
       </b-card-code>
     </b-card-code>
 
@@ -407,13 +390,13 @@
         variant="outline-primary"
         class="bg-gradient-primary "
         type="submit"
-        @click.prevent="validationForm"
+        @click.prevent="TujuanDisposisi"
       >
         <feather-icon
           icon="PlusIcon"
           class="mr-50"
         />
-        <span class="align-middle">Simpan</span>
+        <span class="align-middle">Tambah</span>
       </b-button>
     </b-card-code>
   </validation-observer>
@@ -483,6 +466,9 @@ export default {
       gantiFile: false,
       fileName: '',
       url: '',
+      selected: [],
+      options: [],
+      optionsResponder: [],
       optionsKeputusan: [],
       optionsViewers: [
         { value: '', text: '' },
@@ -502,10 +488,6 @@ export default {
         { value: 'Instansi Pendidikan', text: 'Instansi Pendidikan' },
         { value: 'Pemberitahuan', text: 'Pemberitahuan' },
         { value: 'ILain-lain', text: 'ILain-lain' },
-      ],
-      selected: [],
-      options: [
-
       ],
       optionsPerintah: [
         { value: '', text: 'Pilih Tujuan' },
@@ -537,7 +519,6 @@ export default {
         },
         })
       this.fileName = data
-      // console.log(this.fileName)
     },
 
     openFile() {
@@ -561,8 +542,9 @@ export default {
     },
 
     async kirimKomentar1() {
-      const idUser = JSON.parse(localStorage.getItem('userData'))
-      await axios.post(`api/v1/siap/disposition/comment/${idUser.role.id}`, {
+      // const idUser = JSON.parse(localStorage.getItem('userData'))
+      // await axios.post(`api/v1/siap/disposition/comment/${idUser.role.id}`, {
+      await axios.post(`api/v1/siap/disposition/comment/${this.selectedKeputusan[0].value}`, {
         comment: this.Komentar1,
       }, {
         headers:
@@ -664,13 +646,13 @@ export default {
       this.userRole = roleName.role.name
       this.selectedFile = data.disposition.file.id
       this.url = data.disposition.file !== null ? data.disposition.file.url : 'tes'
-      this.Jabatan = data.reciver_type
+      this.Jabatan = data.user.role_name
       this.Komentar1 = data.decision.comment
       this.Komentar = data.responders.map(e => ({ id: e.user_id, nama: e.role_name, komentar: e.comment }))
       this.selected = data.responders.map(e => (e.user_id))
       this.selectedKeputusan.push({ text: data.decision.role_name, value: data.decision.user_id })
       this.selectedViewers = data.supervisors.map(e => ({ value: e.id, text: e.role_name }))
-
+      // this.optionsResponder.push(data.responders.map(e => ({ value: e.role_id, text: e.role_name })))
       this.privates = data.disposition.private !== 0
 
       // this.options = data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name }))
@@ -811,6 +793,18 @@ export default {
     border-bottom: 1px solid #d8d6de;
     border-radius: 0;
     pointer-events: none;
+  }
+}
+
+.open-file{
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  padding: 10px;
+  border-radius: 14px;
+  transition: background-color 0.5s ease;
+  &:hover{
+    background: #efefef;
   }
 }
 </style>
