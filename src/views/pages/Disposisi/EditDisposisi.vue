@@ -537,7 +537,7 @@ export default {
         },
         })
       this.fileName = data
-      console.log(this.fileName)
+      // console.log(this.fileName)
     },
 
     openFile() {
@@ -569,7 +569,6 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
         .then(response => {
-          console.log(response)
           this.$toast({
             component: ToastificationContent,
             props: {
@@ -600,12 +599,12 @@ export default {
     },
 
     async kirimKomentar(n) {
-      const idUser = JSON.parse(localStorage.getItem('userData'))
-      console.log('parse', idUser.role.id)
-      console.log('parse2', n)
+      // const idUser = JSON.parse(localStorage.getItem('userData'))
+      // console.log('parse', idUser.role.id)
+      // console.log('parse2', n)
       // const id = n.id
-      console.log('parse3', this.Komentar[n])
-      console.log('parse4', this.Komentar1)
+      // console.log('parse3', this.Komentar[n])
+      // console.log('parse4', this.Komentar1)
       // const param = Number(this.$route.params.id)
       await axios.post(`api/v1/siap/disposition/comment/${this.Komentar[n].id}`, {
         comment: this.Komentar[n].komentar,
@@ -614,7 +613,6 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
         .then(response => {
-          console.log(response)
           this.$toast({
             component: ToastificationContent,
             props: {
@@ -693,14 +691,13 @@ export default {
       this.options = data.map(e => ({ item: e.id, name: e.name }))
       this.optionsKeputusan = data.map(e => ({ value: e.id, text: e.name }))
       this.optionsViewers = data.map(e => ({ value: e.id, text: e.name }))
-      console.log('option', this.option)
-        .catch(error => {
-          console.log(error)
-        })
+      // console.log('option', this.option)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
     },
 
     downloadItem() {
-      console.log(this.url)
       // const param = Number(this.$route.params.id)
       axios.get(this.url,
         {
@@ -709,18 +706,16 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
         .then(response => {
-          console.log(response)
           const blob = new Blob([response.data])
           const link = document.createElement('a')
           link.href = URL.createObjectURL(blob)
           link.download = this.NoSurat
           link.click()
           URL.revokeObjectURL(link.href)
-        }).catch(console.error)
+        })
     },
 
     async addDispo() {
-      console.log(this.privates)
       await axios.post('api/v1/siap/disposition/add', {
         cat_name: this.Kategori,
         title: this.Perihal,
@@ -744,12 +739,12 @@ export default {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
-        .then(response => {
-          console.log(response.data.data)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      // .then(response => {
+      //   console.log(response.data.data)
+      // })
+      // .catch(error => {
+      //   console.log(error)
+      // })
     },
   },
 }
