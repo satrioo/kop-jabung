@@ -376,7 +376,7 @@ export default {
     },
 
     async addDispo() {
-      console.log('adding')
+      // console.log('adding')
       await axios.post('api/v1/siap/disposition/add', {
         title: this.Perihal,
         from: this.Pengirim,

@@ -120,9 +120,163 @@
                 text-field="name"
                 disabled-field="notEnabled"
                 class="demo-inline-spacing labelfull"
+                :disabled="$route.name !== 'edit-disposisi'"
               />
             </b-form-group>
           </b-row>
+
+          <b-row class="match-height mt-2">
+            <b-col md="12">
+              <h5> Ganti File Surat</h5>
+              <b-form-group
+                label="File Surat"
+                label-for="FileSurat"
+              >
+
+                <div
+                  v-if="gantiFile == false"
+                  style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;"
+                >
+                  <div
+                    class="open-file"
+                    @click="openFile()"
+                  >
+                    <feather-icon
+                      icon="FileIcon"
+                      size="72"
+                    />
+                    <h5 class="ml-1">
+                      Open File
+                    </h5>
+                  </div>
+
+                  <b-button
+                    v-show="$route.name === 'edit-disposisi'"
+                    v-model="gantiFile"
+                    variant="outline-primary"
+                    class="bg-gradient-primary "
+                    @click.prevent="toggleFile"
+                  >
+                    <span class="align-middle">Ganti File</span>
+                  </b-button>
+                </div>
+
+                <div
+                  v-else
+                  style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;"
+                >
+                  <b-form-file
+                    id="FileSurat"
+                    v-model="file"
+                    placeholder="Input File Surat"
+                    drop-placeholder="Drop file here..."
+                    @change="fileChange"
+                  />
+
+                  <b-button
+                    v-model="gantiFile"
+                    variant="outline-primary"
+                    class="bg-gradient-primary mt-1"
+                    @click.prevent="toggleFile"
+                  >
+                    <span class="align-middle">Open File</span>
+                  </b-button>
+                </div>
+
+              </b-form-group>
+            </b-col>
+          </b-row>
+
+          <b-card-code
+            title="Keputusan"
+            style="margin: 0 -15px;"
+          >
+            <b-row
+              class="match-height"
+            >
+              <b-col md="12">
+                <div class="tanggapan">
+                  <div class="avatar">
+                    <img :src="require('@/assets/images/icons/user.png')">
+                  </div>
+                  <div
+                    class="input"
+                    :class="Jabatan === selectedKeputusan[0].text ? '' : 'uncomment'"
+                  >
+                    <h2> {{ selectedKeputusan[0].text }} </h2>
+                    <b-input-group>
+                      <b-form-input
+                        v-model="Komentar1"
+                        :disabled="Jabatan !== selectedKeputusan[0].text"
+                        placeholder="Belum ada komentar"
+                      />
+                      <b-button
+                        v-show="Jabatan === selectedKeputusan[0].text"
+                        variant="outline-primary"
+                        class="bg-gradient-primary"
+                        style="border-radius: 0"
+                        @click="kirimKomentar1"
+                      >
+                        <span class="align-middle">Kirim</span>
+                      </b-button>
+                    </b-input-group>
+                  </div>
+                </div>
+
+              </b-col>
+            </b-row>
+          </b-card-code>
+
+          <b-row>
+            <b-col md="12 ">
+              <b-card-code
+                title="Tanggapan"
+                style="margin: 0 -15px;"
+              >
+                <div
+                  v-for="(option, index) in Komentar"
+                  :key="option.id"
+                  class="tanggapan"
+                  style="margin-bottom:15px"
+                >
+                  <div class="avatar">
+                    <img :src="require('@/assets/images/icons/user.png')">
+                  </div>
+
+                  <div
+                    class="input"
+                    :class="Jabatan === Komentar[index].nama ? '' : 'uncomment'"
+                  >
+                    <h2> {{ option.nama }} </h2>
+                    <b-input-group>
+                      <b-form-input
+                        v-model="Komentar[index].komentar"
+                        placeholder="Belum ada komentar"
+                        :disabled="Komentar[index].nama !== Jabatan"
+                      />
+                      <b-button
+                        v-show="Komentar[index].nama === Jabatan"
+                        variant="outline-primary"
+                        class="bg-gradient-primary"
+                        style="border-radius: 0"
+                        @click="kirimKomentar(index)"
+                      >
+                        <span class="align-middle">Kirim</span>
+                      </b-button>
+                    </b-input-group>
+                  </div>
+                </div>
+              </b-card-code>
+            </b-col>
+          </b-row>
+
         </b-col>
 
         <b-col md="6">
@@ -160,6 +314,7 @@
                 v-model="tags"
                 input-id="tags-basic"
                 placeholder="Tambah Tag"
+                :disabled="$route.name !== 'edit-disposisi'"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -176,6 +331,7 @@
               label="text"
               placeholder="Pilih Keputusan"
               :options="optionsKeputusan"
+              :disabled="$route.name !== 'edit-disposisi'"
             />
           </b-form-group>
 
@@ -190,6 +346,7 @@
               label="text"
               placeholder="Pilih Viewers"
               :options="optionsViewers"
+              :disabled="$route.name !== 'edit-disposisi'"
               multiple
             />
           </b-form-group>
@@ -203,6 +360,7 @@
               v-model="privates"
               checked="false"
               name="check-button"
+              :disabled="$route.name !== 'edit-disposisi'"
               switch
               inline
             />
@@ -211,186 +369,39 @@
         </b-col>
       </b-row>
 
-      <b-row class="match-height">
-        <b-col md="6">
-          <h5> Ganti File Surat</h5>
-          <b-form-group
-            label="File Surat"
-            label-for="FileSurat"
-          >
-
-            <div
-              v-if="gantiFile == false"
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;"
-            >
-              <div
-                class="open-file"
-                @click="openFile()"
-              >
-                <feather-icon
-                  icon="FileIcon"
-                  size="72"
-                />
-                <h5 class="ml-1">
-                  Open File
-                </h5>
-              </div>
-
-              <b-button
-                v-model="gantiFile"
-                variant="outline-primary"
-                class="bg-gradient-primary "
-                @click.prevent="toggleFile"
-              >
-                <span class="align-middle">Ganti File</span>
-              </b-button>
-            </div>
-
-            <div
-              v-else
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: wrap;"
-            >
-              <b-form-file
-                id="FileSurat"
-                v-model="file"
-                placeholder="Input File Surat"
-                drop-placeholder="Drop file here..."
-                @change="fileChange"
-              />
-
-              <b-button
-                v-model="gantiFile"
-                variant="outline-primary"
-                class="bg-gradient-primary mt-1"
-                @click.prevent="toggleFile"
-              >
-                <span class="align-middle">Open File</span>
-              </b-button>
-            </div>
-
-          </b-form-group>
-        </b-col>
-      </b-row>
-
-      <b-card-code
-        title="Keputusan"
-        style="margin: 0 -15px;"
+      <b-button
+        variant="outline-primary"
+        class="bg-gradient-primary "
+        type="submit"
+        @click.prevent="validationForm"
       >
-        <b-row
-          class="match-height"
-        >
-          <b-col md="6">
-            <div class="tanggapan">
-              <div class="avatar">
-                <img :src="require('@/assets/images/icons/user.png')">
-              </div>
-              <div
-                class="input"
-                :class="Jabatan === selectedKeputusan[0].text ? '' : 'uncomment'"
-              >
-                <h2> {{ selectedKeputusan[0].text }} </h2>
-                <b-input-group>
-                  <b-form-input
-                    v-model="Komentar1"
-                    :disabled="Jabatan !== selectedKeputusan[0].text"
-                    placeholder="Belum ada komentar"
-                  />
-                  <b-button
-                    v-show="Jabatan === selectedKeputusan[0].text"
-                    variant="outline-primary"
-                    class="bg-gradient-primary"
-                    style="border-radius: 0"
-                    @click="kirimKomentar1"
-                  >
-                    <span class="align-middle">Kirim</span>
-                  </b-button>
-                </b-input-group>
-              </div>
-            </div>
+        <feather-icon
+          icon="SaveIcon"
+          class="mr-50"
+        />
+        <span class="align-middle">Simpan</span>
+      </b-button>
 
-          </b-col>
-        </b-row>
-
-        <b-row>
-          <b-col md="6">
-            <b-card-code
-              title="Tanggapan"
-              style="margin: 0 -15px;"
-            >
-              <div
-                v-for="(option, index) in Komentar"
-                :key="option.id"
-                class="tanggapan"
-                style="margin-bottom:15px"
-              >
-                <div class="avatar">
-                  <img :src="require('@/assets/images/icons/user.png')">
-                </div>
-
-                <div
-                  class="input"
-                  :class="Jabatan === Komentar[index].nama ? '' : 'uncomment'"
-                >
-                  <h2> {{ option.nama }} </h2>
-                  <b-input-group>
-                    <b-form-input
-                      v-model="Komentar[index].komentar"
-                      placeholder="Belum ada komentar"
-                      :disabled="Komentar[index].nama !== Jabatan"
-                    />
-                    <b-button
-                      v-show="Komentar[index].nama === Jabatan"
-                      variant="outline-primary"
-                      class="bg-gradient-primary"
-                      style="border-radius: 0"
-                      @click="kirimKomentar(index)"
-                    >
-                      <span class="align-middle">Kirim</span>
-                    </b-button>
-                  </b-input-group>
-                </div>
-              </div>
-            </b-card-code>
-          </b-col>
-        </b-row>
-        <b-button
-          variant="outline-primary"
-          class="bg-gradient-primary "
-          type="submit"
-          @click.prevent="validationForm"
-        >
-          <feather-icon
-            icon="SaveIcon"
-            class="mr-50"
-          />
-          <span class="align-middle">Simpan</span>
-        </b-button>
-      </b-card-code>
     </b-card-code>
 
     <b-card-code title="Perintah Disposisi">
       <b-row class="match-height">
         <b-col md="6">
-
-          <b-form-select
-            v-model="Perintah"
-            :options="optionsPerintah"
-            placeholder="as"
+          <v-select
+            v-model="selectedPerintah"
+            :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+            label="text"
+            placeholder="Pilih Tujuan Perintah Disposisi"
+            :options="optionsKeputusan"
           />
         </b-col>
       </b-row>
+
       <b-button
         variant="outline-primary"
         class="bg-gradient-primary "
         type="submit"
-        @click.prevent="TujuanDisposisi"
+        @click.prevent="tujuanDisposisi"
       >
         <feather-icon
           icon="PlusIcon"
@@ -398,6 +409,7 @@
         />
         <span class="align-middle">Tambah</span>
       </b-button>
+
     </b-card-code>
   </validation-observer>
 </template>
@@ -454,12 +466,15 @@ export default {
       Perintah: '',
       Jabatan: '',
       Komentar1: '',
+      Komentar1_id: '',
       Komentar2: '',
+      dispoID: '',
       Komentar: [],
       Responder1: '',
       userRole: '',
       selectedFile: '',
       selectedKeputusan: [],
+      selectedPerintah: [],
       selectedViewers: [],
       privates: false,
       file: null,
@@ -509,7 +524,6 @@ export default {
       image.append('file', files)
       image.append('from', 1)
       this.file = URL.createObjectURL(files)
-      // const { data } = await axios.post('/api/v1/file/upload', image)
       const { data } = await axios.post('api/v1/file/upload',
         image, {
           headers:
@@ -542,10 +556,9 @@ export default {
     },
 
     async kirimKomentar1() {
-      // const idUser = JSON.parse(localStorage.getItem('userData'))
-      // await axios.post(`api/v1/siap/disposition/comment/${idUser.role.id}`, {
-      await axios.post(`api/v1/siap/disposition/comment/${this.selectedKeputusan[0].value}`, {
+      await axios.post('api/v1/siap/disposition/comment', {
         comment: this.Komentar1,
+        comment_id: this.Komentar1_id,
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
@@ -581,15 +594,47 @@ export default {
     },
 
     async kirimKomentar(n) {
-      // const idUser = JSON.parse(localStorage.getItem('userData'))
-      // console.log('parse', idUser.role.id)
-      // console.log('parse2', n)
-      // const id = n.id
-      // console.log('parse3', this.Komentar[n])
-      // console.log('parse4', this.Komentar1)
-      // const param = Number(this.$route.params.id)
-      await axios.post(`api/v1/siap/disposition/comment/${this.Komentar[n].id}`, {
+      await axios.post('api/v1/siap/disposition/comment', {
         comment: this.Komentar[n].komentar,
+        comment_id: this.Komentar[n].commentID,
+      }, {
+        headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+      })
+        .then(response => {
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Success',
+              icon: 'InfoIcon',
+              text: response.data.message,
+              variant: 'success',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
+        })
+        .catch(error => {
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Error',
+              icon: 'InfoIcon',
+              text: error.response.data.error.message,
+              variant: 'danger',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
+        })
+    },
+
+    async tujuanDisposisi() {
+      await axios.post('api/v1/siap/disposition/send', {
+        disposition_id: this.dispoID,
+        to: this.selectedPerintah.value,
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
@@ -634,11 +679,10 @@ export default {
         })
 
       this.NoSurat = data.disposition.code
-      // this.Deadline = data.disposition.dateline
       const date = data.disposition.dateline
       this.optionsDeadline.push({ text: date, value: '' })
       this.Perihal = data.disposition.title
-
+      this.dispoID = data.disposition.id
       this.Kategori = data.disposition.category.name
       this.Pengirim = data.disposition.from
       this.Deskripsi = data.disposition.desc
@@ -648,7 +692,10 @@ export default {
       this.url = data.disposition.file !== null ? data.disposition.file.url : 'tes'
       this.Jabatan = data.user.role_name
       this.Komentar1 = data.decision.comment
-      this.Komentar = data.responders.map(e => ({ id: e.user_id, nama: e.role_name, komentar: e.comment }))
+      this.Komentar1_id = data.decision.id
+      this.Komentar = data.responders.map(e => ({
+        id: e.user_id, nama: e.role_name, komentar: e.comment, commentID: e.id,
+      }))
       this.selected = data.responders.map(e => (e.user_id))
       this.selectedKeputusan.push({ text: data.decision.role_name, value: data.decision.user_id })
       this.selectedViewers = data.supervisors.map(e => ({ value: e.id, text: e.role_name }))
@@ -658,7 +705,6 @@ export default {
       // this.options = data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name }))
       // this.options.push(data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name })))
       this.tags = data.disposition.tags.map(e => (e.name))
-      // console.log('asd', this.tags)
       //   .catch(error => {
       //     console.log(error)
       //   })
@@ -680,7 +726,6 @@ export default {
     },
 
     downloadItem() {
-      // const param = Number(this.$route.params.id)
       axios.get(this.url,
         {
           responseType: 'blob',
@@ -711,11 +756,6 @@ export default {
         tags: this.tags,
         user_decision: this.selectedKeputusan[0].value,
         user_responders: this.selected,
-        // forward_to: {
-        //   responders: [
-        //     this.selected,
-        //   ],
-        // },
 
       }, {
         headers:
@@ -794,6 +834,15 @@ export default {
     border-radius: 0;
     pointer-events: none;
   }
+}
+
+[dir] .vs--disabled .vs__selected{
+  background-color: #00427A;
+  color: #fff;
+}
+
+.custom-control-input[disabled] ~ .custom-control-label, .custom-control-input:disabled ~ .custom-control-label {
+  color: #615f6f;
 }
 
 .open-file{

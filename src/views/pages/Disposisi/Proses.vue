@@ -319,19 +319,19 @@ export default {
         })
       this.dataRows = data.data.map(e => ({
         id: e.id,
-        NoDisposisi: e.disposition.code,
-        Perihal: e.disposition.title,
-        Waktu: e.disposition.date,
-        Deadline: e.disposition.dateline,
-        Pengirim: e.disposition.from,
-        Status: e.disposition.status_letter,
-        // Komentar: e.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })),
+        NoDisposisi: e.disposition !== null ? e.disposition.code : 'data kosong',
+        Perihal: e.disposition !== null ? e.disposition.title : 'data kosong',
+        Waktu: e.disposition !== null ? e.disposition.date : 'data kosong',
+        Deadline: e.disposition !== null ? e.disposition.dateline : 'data kosong',
+        Pengirim: e.disposition !== null ? e.disposition.from : 'data kosong',
+        Status: e.disposition !== null ? e.disposition.status_letter : 'data kosong',
+        // Komentar: e.disposition !== null ? e.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })) : 'data kosong',
         Aksi: '',
       }))
-      // console.log('datarows', this.dataRows)
-      //   .catch(error => {
-      //     console.log(error)
-      //   })
+      console.log('datarows', this.dataRows)
+        .catch(error => {
+          console.log(error)
+        })
     },
   },
 }
