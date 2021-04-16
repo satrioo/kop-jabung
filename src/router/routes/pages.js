@@ -79,13 +79,13 @@ export default [
         },
       ],
     },
-    // beforeEnter(to, from, next) {
-    //   if (JSON.parse(localStorage.getItem('userData')).role.name !== 'Staff SE') {
-    //     next('/disposisi/proses-disposisi')
-    //   } else {
-    //     next('/disposisi/proses-disposisi2323232')
-    //   }
-    // },
+    beforeEnter(to, from, next) {
+      if (JSON.parse(localStorage.getItem('userData')).name !== 'Staff SE') {
+        next('/disposisi/proses-disposisi')
+      } else {
+        next()
+      }
+    },
   },
   {
     path: '/disposisi/detail-disposisi/:id',
