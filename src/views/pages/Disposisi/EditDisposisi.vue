@@ -791,16 +791,30 @@ export default {
 .labelfull .custom-checkbox {
     width: 100%;
 }
+
+.detail-dispo{
+  .form-control, .custom-select{
+    border: unset;
+    border-bottom: 1px solid #d8d6de;
+    border-radius: 0;
+    pointer-events: none;
+  }
+}
+
 .tanggapan{
   display: flex;
   align-items: center;
   justify-content: space-around;
   .uncomment{
     input{
-      border: unset;
-      border-left: solid 1px;
-      border-radius: 0;
+      border: unset !important;
+      border-left: solid 1px !important;
+      border-radius: 0 !important;
     }
+  }
+  input{
+    border: 1px solid #d8d6de !important;
+    pointer-events: unset !important;
   }
   .avatar{
     width: 80px;
@@ -826,13 +840,8 @@ export default {
     background-image: linear-gradient(47deg, #00427A, #005ead);
     color: #fff;
   }
-}
- .detail-dispo{
-  .form-control, .custom-select{
-    border: unset;
-    border-bottom: 1px solid #d8d6de;
-    border-radius: 0;
-    pointer-events: none;
+  .btn{
+    height: 38px;
   }
 }
 

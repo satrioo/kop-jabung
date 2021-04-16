@@ -1,9 +1,10 @@
 <template>
-  <b-card-code title="Daftar Proses Disposisi">
+  <b-card-code title="Proses Disposisi">
     <b-link
       to="/disposisi/tambah-disposisi"
     >
       <b-button
+        v-if="jabatan.name === 'Staff SE'"
         variant="outline-primary"
         class="bg-gradient-primary"
         style="position: absolute; right: 20px; top: 15px;"
@@ -12,7 +13,7 @@
           icon="PlusIcon"
           class="mr-50"
         />
-        <span class="align-middle text-light">Tambah Surat Masuk</span>
+        <span class="align-middle text-light">Tambah Surat Masuk </span>
       </b-button>
     </b-link>
     <!-- search input -->
@@ -213,6 +214,7 @@ export default {
   },
   data() {
     return {
+      pageTitle: '',
       pageLength: 10,
       dir: false,
       // codeBasic,
@@ -251,6 +253,7 @@ export default {
         NoDisposisi: '',
         Perihal: '',
         Waktu: '',
+        jabatan: '',
         Deadline: '',
         Pengirim: '',
         Status: '',
@@ -269,7 +272,7 @@ export default {
           Aksi: '<a> asdasd </a>',
         },
       ],
-      searchTerm: 'Process',
+      searchTerm: '',
       Status: [{
         1: 'Process',
         2: 'Proses',
@@ -297,9 +300,11 @@ export default {
         Process      : 'light-info',
         /* eslint-enable key-spacing */
       }
-
       return status => statusColor[status]
     },
+  },
+  created() {
+    this.jabatan = JSON.parse(localStorage.getItem('userData'))
   },
   mounted() {
     this.getDisposisi()
@@ -316,6 +321,9 @@ export default {
         {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+          params: {
+            'status[]': 0,
+          },
         })
       this.dataRows = data.data.map(e => ({
         id: e.id,
@@ -328,10 +336,10 @@ export default {
         // Komentar: e.disposition !== null ? e.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })) : 'data kosong',
         Aksi: '',
       }))
-      console.log('datarows', this.dataRows)
-        .catch(error => {
-          console.log(error)
-        })
+      // console.log('datarows', this.dataRows)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
     },
   },
 }

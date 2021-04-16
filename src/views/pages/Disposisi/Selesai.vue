@@ -1,6 +1,21 @@
 <template>
-  <b-card-code title="Daftar Proses Disposisi Selesai">
-
+  <b-card-code title="Disposisi Selesai">
+    <b-link
+      to="/disposisi/tambah-disposisi"
+    >
+      <b-button
+        v-if="jabatan.name === 'Staff SE'"
+        variant="outline-primary"
+        class="bg-gradient-primary"
+        style="position: absolute; right: 20px; top: 15px;"
+      >
+        <feather-icon
+          icon="PlusIcon"
+          class="mr-50"
+        />
+        <span class="align-middle text-light">Tambah Surat Masuk </span>
+      </b-button>
+    </b-link>
     <!-- search input -->
     <div class="custom-search d-flex justify-content-end">
       <b-form-group>
@@ -46,18 +61,23 @@
 
         <!-- Column: Name -->
         <span
-          v-if="props.column.field === 'fullName'"
+          v-if="props.column.field === 'NoDisposisi'"
           class="text-nowrap"
         >
-          <b-avatar
-            :src="props.row.avatar"
-            class="mx-1"
-          />
-          <span class="text-nowrap">{{ props.row.fullName }}</span>
+          <span
+            v-b-tooltip.hover.right="'Klik untuk lihat Detail'"
+            class="text-nowrap link-no"
+            variant="outline-primary"
+            @click="detailDisposisi(props.row.id)"
+          >{{ props.row.NoDisposisi }}</span>
         </span>
 
         <!-- Column: Status -->
-        <span v-else-if="props.column.field === 'Status'">
+        <span
+          v-else-if="props.column.field === 'Status'"
+          v-b-modal.modal-center
+          :title="props.row.Komentar"
+        >
           <b-badge :variant="statusVariant(props.row.Status)">
             {{ props.row.Status }}
           </b-badge>
@@ -78,12 +98,12 @@
                   class="text-body align-middle mr-25"
                 />
               </template>
-              <b-dropdown-item @click="editDisposisi">
+              <b-dropdown-item @click="editDisposisi(props.row.id)">
                 <feather-icon
                   icon="Edit2Icon"
                   class="mr-50"
                 />
-                <span>Edit</span>
+                <span>Edit </span>
               </b-dropdown-item>
               <b-dropdown-item>
                 <feather-icon
@@ -158,12 +178,12 @@
 </template>
 
 <script>
-/* eslint-disable vue/no-unused-components */
 /* eslint-disable no-unused-vars */
+/* eslint-disable vue/no-unused-components */
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
   BAvatar, BBadge, BPagination, BFormGroup, BFormInput, BFormSelect, BDropdown, BDropdownItem,
-  BButton, BLink,
+  BButton, BLink, VBTooltip, VBModal,
 } from 'bootstrap-vue'
 import { VueGoodTable } from 'vue-good-table'
 import axios from '@axios'
@@ -185,9 +205,16 @@ export default {
     BDropdown,
     BDropdownItem,
     BButton,
+    VBModal,
+    VBTooltip,
+  },
+  directives: {
+    'b-tooltip': VBTooltip,
+    'b-modal': VBModal,
   },
   data() {
     return {
+      pageTitle: '',
       pageLength: 10,
       dir: false,
       // codeBasic,
@@ -222,13 +249,16 @@ export default {
         },
       ],
       dataRows: [{
+        id: '',
         NoDisposisi: '',
         Perihal: '',
         Waktu: '',
+        jabatan: '',
         Deadline: '',
         Pengirim: '',
         Status: '',
         Aksi: '',
+        Komentar: [],
       }],
       rows: [
         {
@@ -242,9 +272,9 @@ export default {
           Aksi: '<a> asdasd </a>',
         },
       ],
-      searchTerm: 'Selesai',
+      searchTerm: '',
       Status: [{
-        1: 'Current',
+        1: 'Process',
         2: 'Proses',
         3: 'Rejected',
         4: 'Resigned',
@@ -263,47 +293,53 @@ export default {
     statusVariant() {
       const statusColor = {
         /* eslint-disable key-spacing */
-        Current      : 'light-primary',
-        Proses       : 'light-success',
-        Rejected     : 'light-danger',
+        Processe     : 'light-primary',
+        Success       : 'light-success',
+        Failed       : 'light-danger',
         Resigned     : 'light-warning',
-        Applied      : 'light-info',
+        Process      : 'light-info',
         /* eslint-enable key-spacing */
       }
-
       return status => statusColor[status]
     },
+  },
+  created() {
+    this.jabatan = JSON.parse(localStorage.getItem('userData'))
   },
   mounted() {
     this.getDisposisi()
   },
   methods: {
-    editDisposisi() {
-      window.location.href = `edit-disposisi/${this.pageLength}`
+    editDisposisi(e) {
+      window.location.href = `edit-disposisi/${e}`
     },
-
+    detailDisposisi(e) {
+      window.location.href = `detail-disposisi/${e}`
+    },
     async getDisposisi() {
-      const { data } = await axios.get('api/v1/siap/inboxs',
+      const { data } = await axios.get('api/v1/siap/disposition/inboxs',
         {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+          params: {
+            status: [1, 2],
+          },
         })
-
       this.dataRows = data.data.map(e => ({
         id: e.id,
-        NoDisposisi: e.incoming_letter.code,
-        Perihal: e.incoming_letter.title,
-        Waktu: e.incoming_letter.date,
-        Deadline: e.incoming_letter.dateline,
-        Pengirim: e.incoming_letter.from,
-        Status: e.incoming_letter.status_letter,
+        NoDisposisi: e.disposition !== null ? e.disposition.code : 'data kosong',
+        Perihal: e.disposition !== null ? e.disposition.title : 'data kosong',
+        Waktu: e.disposition !== null ? e.disposition.date : 'data kosong',
+        Deadline: e.disposition !== null ? e.disposition.dateline : 'data kosong',
+        Pengirim: e.disposition !== null ? e.disposition.from : 'data kosong',
+        Status: e.disposition !== null ? e.disposition.status_letter : 'data kosong',
+        // Komentar: e.disposition !== null ? e.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })) : 'data kosong',
         Aksi: '',
       }))
-
-      console.log('datarows', this.dataRows)
-        .catch(error => {
-          console.log(error)
-        })
+      // console.log('datarows', this.dataRows)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
     },
   },
 }
@@ -312,6 +348,11 @@ export default {
 <style lang="scss" >
 @import '@core/scss/vue/libs/vue-good-table.scss';
 .nopad{
-    padding: 0;
+  padding: 0;
+}
+.link-no{
+  border-bottom: solid 1px #c5c5c5;
+  padding-bottom: 3px;
+  cursor: pointer;
 }
 </style>
