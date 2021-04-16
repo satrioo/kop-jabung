@@ -4,10 +4,10 @@
 set -e
 
 # build
-npm run build
+/opt/plesk/node/12/bin/npm run-script build
 
 # navigate into the build output directory
-cd dist
+cp .htaccess dist
 
 # if you are deploying to a custom domain
 # echo 'www.example.com' > CNAME
