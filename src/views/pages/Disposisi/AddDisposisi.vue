@@ -126,25 +126,34 @@
 
           <b-row
             class="match-height mt-2"
-            style="padding: 0px 20px 0px;"
           >
-            <b-form-group
-              label="Divisi/ Bagian/Unit Terkait"
-            >
-              <b-form-checkbox-group
+            <b-col md="12">
+              <b-form-group
+                label="Divisi/ Bagian/Unit Terkait"
+              >
+                <!-- <b-form-checkbox-group
                 v-model="selected"
                 :options="options"
                 value-field="item"
                 text-field="name"
                 disabled-field="notEnabled"
                 class="demo-inline-spacing labelfull"
-              />
-            </b-form-group>
+              /> -->
+                <v-select
+                  v-model="selected"
+                  :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                  label="text"
+                  multiple
+                  placeholder="Pilih Divisi"
+                  :options="options"
+                />
+              </b-form-group>
+            </b-col>
           </b-row>
           <b-form-group
             label="File Surat"
             label-for="FileSurat"
-            class="mt-2"
+            class="mt-1"
           >
             <!-- Styled -->
             <b-form-file
@@ -389,14 +398,14 @@ export default {
         note: this.Catatan,
         private: this.privates,
         user_decision: this.selectedKeputusan.value,
-        user_responders: this.selected,
+        user_responders: this.selected.map(e => (e.value)),
         user_supervisors: this.selectedViewers.value,
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
         .then(response => {
-          console.log(response)
+          // console.log(response)
           this.$toast({
             component: ToastificationContent,
             props: {
@@ -423,7 +432,7 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
 
-      this.options = data.map(e => ({ item: e.id, name: e.name }))
+      this.options = data.map(e => ({ value: e.id, text: e.name }))
       this.optionsViewers = data.map(e => ({ value: e.id, text: e.name }))
     },
 

@@ -53,13 +53,11 @@ export default class JwtService {
               this.setToken(r.data.data.token)
               this.setRefreshToken(r.data.data.refresh_token)
               // this.$router.go()
-              this.$router.go(0)
-              this.$forceUpdate()
+              window.location.href = ''
               console.log('token-refreshed')
               // this.onAccessTokenFetched(r.data.accessToken)
             })
           }
-          this.$router.go(0)
           const retryOriginalRequest = new Promise(resolve => {
             this.addSubscriber(accessToken => {
               // Make sure to assign accessToken according to your response.

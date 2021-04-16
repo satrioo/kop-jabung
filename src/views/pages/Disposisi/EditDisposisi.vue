@@ -25,23 +25,16 @@
           </validation-provider>
         </b-col>
         <b-col md="6">
-          <validation-provider
-            #default="{ errors }"
-            name="No. Surat"
-            rules="required"
+          <b-form-group
+            label="Deadline"
+            label-for="Deadline"
           >
-            <b-form-group
-              label="Deadline"
-              label-for="Deadline"
-            >
-              <b-form-select
-                v-model="Deadline"
-                :options="optionsDeadline"
-                placeholder="Pilih Deadline2"
-              />
-            </b-form-group>
-            <small class="text-danger">{{ errors[0] }}</small>
-          </validation-provider>
+            <b-form-select
+              v-model="Deadline"
+              :options="optionsDeadline"
+              placeholder="Pilih Deadline2"
+            />
+          </b-form-group>
         </b-col>
       </b-row>
 
@@ -108,12 +101,12 @@
 
           <b-row
             class="match-height mt-2"
-            style="padding: 0px 20px 0px;"
           >
-            <b-form-group
-              label="Divisi/ Bagian/Unit Terkait"
-            >
-              <b-form-checkbox-group
+            <b-col md="12">
+              <b-form-group
+                label="Divisi/ Bagian/Unit Terkait"
+              >
+                <!-- <b-form-checkbox-group
                 v-model="selected"
                 :options="options"
                 value-field="item"
@@ -121,8 +114,18 @@
                 disabled-field="notEnabled"
                 class="demo-inline-spacing labelfull"
                 :disabled="$route.name !== 'edit-disposisi'"
-              />
-            </b-form-group>
+              /> -->
+                <v-select
+                  v-model="selected"
+                  :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                  label="text"
+                  multiple
+                  placeholder="Pilih Divisi"
+                  :options="options"
+                  :disabled="$route.name !== 'edit-disposisi'"
+                />
+              </b-form-group>
+            </b-col>
           </b-row>
 
           <b-row class="match-height mt-2">
@@ -370,6 +373,7 @@
       </b-row>
 
       <b-button
+        v-show="JabatanName === 'Staff SE'"
         variant="outline-primary"
         class="bg-gradient-primary "
         type="submit"
@@ -384,7 +388,10 @@
 
     </b-card-code>
 
-    <b-card-code title="Perintah Disposisi">
+    <b-card-code
+      v-show="JabatanName === 'Staff SE'"
+      title="Perintah Disposisi"
+    >
       <b-row class="match-height">
         <b-col md="6">
           <v-select
@@ -426,6 +433,7 @@ import { ValidationProvider, ValidationObserver } from 'vee-validate'
 import { required, email } from '@validations'
 import vSelect from 'vue-select'
 import axios from '@axios'
+import dayjs from 'dayjs'
 import useJwt from '@/auth/jwt/useJwt'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
 
@@ -465,6 +473,7 @@ export default {
       Catatan: '',
       Perintah: '',
       Jabatan: '',
+      JabatanName: '',
       Komentar1: '',
       Komentar1_id: '',
       Komentar2: '',
@@ -490,11 +499,7 @@ export default {
       ],
       value: ['apple', 'orange'],
       tags: [],
-      optionsDeadline: [
-        { value: 'OneDay', text: 'OneDay' },
-        { value: 'TwoDay', text: 'TwoDay' },
-        { value: 'ThreeDay', text: 'ThreeDay' },
-      ],
+      optionsDeadline: [],
       optionsKategori: [
         { value: '', text: 'Pilih Kategori' },
         { value: 'Undangan', text: 'Undangan' },
@@ -679,7 +684,7 @@ export default {
         })
 
       this.NoSurat = data.disposition.code
-      const date = data.disposition.dateline
+      const date = dayjs(data.disposition.dateline).format('DD-MM-YYYY')
       this.optionsDeadline.push({ text: date, value: '' })
       this.Perihal = data.disposition.title
       this.dispoID = data.disposition.id
@@ -691,12 +696,13 @@ export default {
       this.selectedFile = data.disposition.file.id
       this.url = data.disposition.file !== null ? data.disposition.file.url : 'tes'
       this.Jabatan = data.user.role_name
+      this.JabatanName = data.user.name
       this.Komentar1 = data.decision.comment
       this.Komentar1_id = data.decision.id
       this.Komentar = data.responders.map(e => ({
         id: e.user_id, nama: e.role_name, komentar: e.comment, commentID: e.id,
       }))
-      this.selected = data.responders.map(e => (e.user_id))
+      this.selected = data.responders.map(e => ({ value: e.user_id, text: e.role_name }))
       this.selectedKeputusan.push({ text: data.decision.role_name, value: data.decision.user_id })
       this.selectedViewers = data.supervisors.map(e => ({ value: e.id, text: e.role_name }))
       // this.optionsResponder.push(data.responders.map(e => ({ value: e.role_id, text: e.role_name })))
@@ -716,7 +722,7 @@ export default {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
-      this.options = data.map(e => ({ item: e.id, name: e.name }))
+      this.options = data.map(e => ({ value: e.id, text: e.name }))
       this.optionsKeputusan = data.map(e => ({ value: e.id, text: e.name }))
       this.optionsViewers = data.map(e => ({ value: e.id, text: e.name }))
       // console.log('option', this.option)
@@ -755,18 +761,40 @@ export default {
         private: this.privates,
         tags: this.tags,
         user_decision: this.selectedKeputusan[0].value,
-        user_responders: this.selected,
-
+        user_responders: this.selected.map(e => (e.value)),
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
-      // .then(response => {
-      //   console.log(response.data.data)
-      // })
-      // .catch(error => {
-      //   console.log(error)
-      // })
+        .then(response => {
+        // console.log(response.data.data)
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Success',
+              icon: 'InfoIcon',
+              text: response.data.message,
+              variant: 'success',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
+        })
+        .catch(error => {
+          this.$toast({
+            component: ToastificationContent,
+            props: {
+              title: 'Error',
+              icon: 'InfoIcon',
+              text: error.response.data.error.message,
+              variant: 'danger',
+            },
+          },
+          {
+            position: 'bottom-right',
+          })
+        })
     },
   },
 }

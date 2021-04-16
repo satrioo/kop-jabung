@@ -100,17 +100,10 @@
               </template>
               <b-dropdown-item @click="editDisposisi(props.row.id)">
                 <feather-icon
-                  icon="Edit2Icon"
+                  :icon="jabatan.name === 'Staff SE' ? 'Edit2Icon' : 'EyeIcon' "
                   class="mr-50"
                 />
-                <span>Edit </span>
-              </b-dropdown-item>
-              <b-dropdown-item>
-                <feather-icon
-                  icon="TrashIcon"
-                  class="mr-50"
-                />
-                <span>Delete</span>
+                <span>{{ jabatan.name === 'Staff SE' ? 'Edit' : 'Lihat' }} </span>
               </b-dropdown-item>
             </b-dropdown>
           </span>
@@ -188,6 +181,7 @@ import {
 import { VueGoodTable } from 'vue-good-table'
 import axios from '@axios'
 import useJwt from '@/auth/jwt/useJwt'
+import dayjs from 'dayjs'
 // import store from '@/store/index'
 // import { codeBasic } from './code'
 
@@ -311,7 +305,11 @@ export default {
   },
   methods: {
     editDisposisi(e) {
-      window.location.href = `edit-disposisi/${e}`
+      if (this.jabatan.name === 'Staff SE') {
+        window.location.href = `edit-disposisi/${e}`
+      } else {
+        window.location.href = `detail-disposisi/${e}`
+      }
     },
     detailDisposisi(e) {
       window.location.href = `detail-disposisi/${e}`
@@ -329,8 +327,8 @@ export default {
         id: e.id,
         NoDisposisi: e.disposition !== null ? e.disposition.code : 'data kosong',
         Perihal: e.disposition !== null ? e.disposition.title : 'data kosong',
-        Waktu: e.disposition !== null ? e.disposition.date : 'data kosong',
-        Deadline: e.disposition !== null ? e.disposition.dateline : 'data kosong',
+        Waktu: e.disposition !== null ? dayjs(e.disposition.date).format('DD-MM-YYYY') : 'data kosong',
+        Deadline: e.disposition !== null ? dayjs(e.disposition.dateline).format('DD-MM-YYYY') : 'data kosong',
         Pengirim: e.disposition !== null ? e.disposition.from : 'data kosong',
         Status: e.disposition !== null ? e.disposition.status_letter : 'data kosong',
         // Komentar: e.disposition !== null ? e.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })) : 'data kosong',

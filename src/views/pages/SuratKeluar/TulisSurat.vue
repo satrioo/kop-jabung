@@ -258,10 +258,10 @@ export default {
           this.$toast({
             component: ToastificationContent,
             props: {
-              title: 'Success',
+              title: 'Error',
               icon: 'InfoIcon',
-              text: error.data.message,
-              variant: 'success',
+              text: error.response.data.error.message,
+              variant: 'danger',
             },
           },
           {
