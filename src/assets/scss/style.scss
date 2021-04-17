@@ -14,9 +14,9 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
 }
 
 .v-select, .v-select *{
-  fill: #fff;
+  fill: #ababab;
 }
 
-.dark-layout .v-select:not(.vs--single) .vs__selected {
-  color: #fff !important;
-  }
+  .dark-layout .v-select:not(.vs--single) .vs__selected {
+    color: #fff !important;
+    }
