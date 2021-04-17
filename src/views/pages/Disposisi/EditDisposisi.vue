@@ -19,6 +19,7 @@
                 id="NoSurat"
                 v-model="NoSurat"
                 placeholder="Input No. Surat"
+                disabled
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -555,7 +556,7 @@ export default {
     validationForm() {
       this.$refs.simpleRules.validate().then(success => {
         if (success) {
-          this.addDispo()
+          this.editDispo()
         }
       })
     },
@@ -748,8 +749,8 @@ export default {
         })
     },
 
-    async addDispo() {
-      await axios.post('api/v1/siap/disposition/add', {
+    async editDispo() {
+      await axios.post(`api/v1/siap/disposition/update/${this.dispoID}`, {
         cat_name: this.Kategori,
         title: this.Perihal,
         from: this.Pengirim,
@@ -762,6 +763,7 @@ export default {
         tags: this.tags,
         user_decision: this.selectedKeputusan[0].value,
         user_responders: this.selected.map(e => (e.value)),
+        user_supervisors: this.selectedViewers.map(e => (e.value)),
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
