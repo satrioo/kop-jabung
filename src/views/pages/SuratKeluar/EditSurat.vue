@@ -1,7 +1,9 @@
 <template>
   <validation-observer ref="simpleRules">
-    <b-card-code title="Tulis Surat Masuk">
-
+    <b-card-code
+      title="Tulis Surat Masuk"
+      :class="$route.name == 'detail-suratkeluar' ? 'detail-dispo' : ''"
+    >
       <b-row class="match-height">
         <b-col md="6">
           <validation-provider
@@ -161,11 +163,15 @@
           v-model="validated_letter"
           :options="snowOption"
           style="height: 250px"
+          :disabled="$route.name === 'detail-suratkeluar'"
         />
       </b-form-group>
     </b-card-code>
 
-    <b-card-code title="Status Surat Keluar">
+    <b-card-code
+      v-show="$route.name !== 'detail-suratkeluar'"
+      title="Status Surat Keluar"
+    >
       <b-row
         class="match-height"
         style="margin:0"
@@ -288,8 +294,8 @@ export default {
       validated_letter: '',
       activity: [],
       optionsStatus: [
-        { value: '', text: 'Proses' },
-        { value: 'Approved', text: 'Disetujui' },
+        { value: 'Process', text: 'Proses' },
+        { value: 'Approve', text: 'Disetujui' },
         { value: 'Reject', text: 'Ditolak' },
       ],
     }
@@ -445,6 +451,15 @@ export default {
   }
   .input-group-append{
     cursor: pointer;
+  }
+}
+
+.detail-dispo{
+  .form-control, .custom-select{
+    border: unset;
+    border-bottom: 1px solid #d8d6de;
+    border-radius: 0;
+    pointer-events: none;
   }
 }
 </style>

@@ -1,9 +1,10 @@
 <template>
-  <b-card-code title="Daftar Proses Disposisi">
+  <b-card-code title="Proses Surat Keluar">
     <b-link
       to="/surat-keluar/tulis"
     >
       <b-button
+        v-if="jabatan.name === 'Staff SE'"
         variant="outline-primary"
         class="bg-gradient-primary"
         style="position: absolute; right: 20px; top: 15px;"
@@ -35,6 +36,7 @@
       :columns="columns"
       :rows="dataRows"
       :rtl="direction"
+      :is-loading="loading"
       style-class="vgt-table striped"
       :search-options="{
         enabled: true,
@@ -60,14 +62,15 @@
 
         <!-- Column: Name -->
         <span
-          v-if="props.column.field === 'fullName'"
+          v-if="props.column.field === 'NoSurat'"
           class="text-nowrap"
         >
-          <b-avatar
-            :src="props.row.avatar"
-            class="mx-1"
-          />
-          <span class="text-nowrap">{{ props.row.fullName }}</span>
+          <span
+            v-b-tooltip.hover.right="'Klik untuk lihat Detail'"
+            class="text-nowrap link-no"
+            variant="outline-primary"
+            @click="editSurat(props.row.id)"
+          >{{ props.row.NoSurat }}</span>
         </span>
 
         <!-- Column: Status -->
@@ -92,20 +95,20 @@
                   class="text-body align-middle mr-25"
                 />
               </template>
-              <b-dropdown-item @click="editDisposisi(props.row.id)">
+              <b-dropdown-item @click="editSurat(props.row.id)">
                 <feather-icon
-                  icon="Edit2Icon"
+                  :icon="jabatan.name === 'Staff SE' ? 'Edit2Icon' : 'EyeIcon' "
                   class="mr-50"
                 />
-                <span>Edit </span>
+                <span>{{ jabatan.name === 'Staff SE' ? 'Edit' : 'Lihat' }} </span>
               </b-dropdown-item>
-              <b-dropdown-item>
+              <!-- <b-dropdown-item>
                 <feather-icon
                   icon="TrashIcon"
                   class="mr-50"
                 />
                 <span>Delete</span>
-              </b-dropdown-item>
+              </b-dropdown-item> -->
             </b-dropdown>
           </span>
         </span>
@@ -164,26 +167,21 @@
         </div>
       </template>
     </vue-good-table>
-
-    <!-- <template #code>
-      {{ codeBasic }}
-    </template> -->
   </b-card-code>
 </template>
 
 <script>
+/* eslint-disable vue/no-unused-components */
 /* eslint-disable no-unused-vars */
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
   BAvatar, BBadge, BPagination, BFormGroup, BFormInput, BFormSelect, BDropdown, BDropdownItem,
-  BButton, BLink,
+  BButton, BLink, VBTooltip,
 } from 'bootstrap-vue'
 import { VueGoodTable } from 'vue-good-table'
 import axios from '@axios'
 import useJwt from '@/auth/jwt/useJwt'
 import dayjs from 'dayjs'
-// import store from '@/store/index'
-// import { codeBasic } from './code'
 
 export default {
   components: {
@@ -199,11 +197,17 @@ export default {
     BDropdown,
     BDropdownItem,
     BButton,
+    VBTooltip,
+  },
+  directives: {
+    'b-tooltip': VBTooltip,
   },
   data() {
     return {
       pageLength: 10,
       dir: false,
+      jabatan: '',
+      loading: true,
       // codeBasic,
       columns: [
         {
@@ -242,7 +246,7 @@ export default {
       dataRows: [{
         id: '',
         NoSurat: '',
-        // Kategori: '',
+        Kategori: '',
         Perihal: '',
         Waktu: '',
         Pengirim: '',
@@ -264,9 +268,9 @@ export default {
       ],
       searchTerm: 'Process',
       Status: [{
-        1: 'Process',
+        1: 'Current',
         2: 'Approved',
-        3: 'Failed',
+        3: 'Rejected',
         4: 'Resigned',
         5: 'Applied',
       },
@@ -283,9 +287,9 @@ export default {
     statusVariant() {
       const statusColor = {
         /* eslint-disable key-spacing */
-        Processe     : 'light-primary',
-        Approved     : 'light-success',
-        Failed       : 'light-danger',
+        Current      : 'light-primary',
+        Approved       : 'light-success',
+        Rejected     : 'light-danger',
         Resigned     : 'light-warning',
         Process      : 'light-info',
         /* eslint-enable key-spacing */
@@ -294,13 +298,19 @@ export default {
       return status => statusColor[status]
     },
   },
+  created() {
+    this.jabatan = JSON.parse(localStorage.getItem('userData'))
+  },
   mounted() {
     this.getSurat()
   },
   methods: {
-    editDisposisi(e) {
-      console.log(e)
-      window.location.href = `edit-suratkeluar/${e}`
+    editSurat(e) {
+      if (this.jabatan.name === 'Staff SE') {
+        window.location.href = `edit-suratkeluar/${e}`
+      } else {
+        window.location.href = `detail-suratkeluar/${e}`
+      }
     },
     async getSurat() {
       const { data } = await axios.get('api/v1/siap/outgoingletter/inboxs',
@@ -320,10 +330,11 @@ export default {
         Status: e.status_letter,
         Aksi: '',
       }))
-      console.log('datarows', this.dataRows)
-        .catch(error => {
-          console.log(error)
-        })
+      this.loading = false
+      // console.log('datarows', this.dataRows)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
     },
   },
 }
@@ -333,5 +344,10 @@ export default {
 @import '@core/scss/vue/libs/vue-good-table.scss';
 .nopad{
     padding: 0;
+}
+.link-no{
+  border-bottom: solid 1px #c5c5c5;
+  padding-bottom: 3px;
+  cursor: pointer;
 }
 </style>

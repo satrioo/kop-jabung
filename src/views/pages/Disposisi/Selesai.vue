@@ -35,6 +35,7 @@
     <vue-good-table
       :columns="columns"
       :rows="dataRows"
+      :is-loading="loading"
       :rtl="direction"
       style-class="vgt-table striped"
       :search-options="{
@@ -210,6 +211,7 @@ export default {
   data() {
     return {
       pageTitle: '',
+      loading: true,
       pageLength: 10,
       dir: false,
       // codeBasic,
@@ -331,6 +333,7 @@ export default {
         // Komentar: e.disposition !== null ? e.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })) : 'data kosong',
         Aksi: '',
       }))
+      this.loading = false
       // console.log('datarows', this.dataRows)
       //   .catch(error => {
       //     console.log(error)

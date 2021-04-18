@@ -17,6 +17,18 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
   fill: #ababab;
 }
 
-  .dark-layout .v-select:not(.vs--single) .vs__selected {
-    color: #fff !important;
-    }
+.dark-layout .v-select:not(.vs--single) .vs__selected {
+  color: #fff !important;
+}
+
+.loading-logo {
+  position: absolute;
+  left: calc(50% - 10px);
+  right: 50%;
+  width: 80px !important;
+  transform: translate(-50%, -50%);
+  top: 38%;
+  img{
+    width: 100%;
+  }
+}
