@@ -347,7 +347,8 @@ export default {
 @import '@core/scss/vue/pages/page-auth.scss';
 
 .bg-login{
-  background: url(/img/tentang-kan-jabung.12a277a0.jpg);
+  // background: url(/img/tentang-kan-jabung.12a277a0.jpg);
+  background: url('../assets/images/logo/tentang-kan-jabung.jpg');
   background-size: cover;
   background-position: 50% 50%;
   background-repeat: no-repeat;
