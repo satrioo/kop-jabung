@@ -22,14 +22,14 @@
       <!-- Left Text-->
       <b-col
         lg="8"
-        class="d-none d-lg-flex align-items-center p-5"
+        class="d-none d-lg-flex align-items-center p-5 bg-login"
       >
         <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-          <b-img
+          <!-- <b-img
             fluid
             :src="imgUrl"
             alt="Login V2"
-          />
+          /> -->
         </div>
       </b-col>
       <!-- /Left Text-->
@@ -169,12 +169,12 @@
             </b-form>
           </validation-observer>
 
-          <b-card-text class="text-center mt-2">
+          <!-- <b-card-text class="text-center mt-2">
             <span>New on our platform? </span>
             <b-link :to="{name:'auth-register'}">
               <span>&nbsp;Create an account</span>
             </b-link>
-          </b-card-text>
+          </b-card-text> -->
 
           <!-- divider -->
           <div class="divider my-2">
@@ -345,4 +345,12 @@ export default {
 
 <style lang="scss">
 @import '@core/scss/vue/pages/page-auth.scss';
+
+.bg-login{
+  background: url(/img/tentang-kan-jabung.12a277a0.jpg);
+  background-size: cover;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+}
 </style>

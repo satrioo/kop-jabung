@@ -374,7 +374,7 @@
       </b-row>
 
       <b-button
-        v-show="JabatanName === 'Staff SE'"
+        v-show="JabatanName === 'Staff SE' && $route.name == 'edit-disposisi'"
         variant="outline-primary"
         class="bg-gradient-primary "
         type="submit"
