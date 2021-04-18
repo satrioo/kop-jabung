@@ -12,10 +12,10 @@ export default [
         title: 'Selesai',
         route: 'selesai',
       },
-      {
-        title: 'Perintah Disposisi',
-        route: 'perintah-disposisi',
-      },
+      // {
+      //   title: 'Perintah Disposisi',
+      //   route: 'perintah-disposisi',
+      // },
     ],
   },
   {
@@ -80,9 +80,9 @@ export default [
     route: 'home',
     icon: 'HomeIcon',
   },
-  {
-    title: 'Second Page',
-    route: 'second-page',
-    icon: 'FileIcon',
-  },
+  // {
+  //   title: 'Second Page',
+  //   route: 'second-page',
+  //   icon: 'FileIcon',
+  // },
 ]
