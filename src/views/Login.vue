@@ -293,7 +293,7 @@ export default {
             password: this.password,
           })
             .then(response => {
-              console.log(response.data.data)
+              // console.log(response.data.data)
               const userData = response.data.data.user
               const permission = response.data.data.permissions
               useJwt.setToken(response.data.data.token)
@@ -303,7 +303,7 @@ export default {
               // this.$ability.update(userData.ability)
 
               // ? This is just for demo purpose. Don't think CASL is role based in this case, we used role in if condition just for ease
-              console.log(userData.role.name)
+              // console.log(userData.role.name)
               this.$router.replace(getHomeRouteForLoggedInUser('login', userData.role.name))
               // this.$router.replace('second-page')
               this.$router.replace('disposisi/proses-disposisi')
@@ -321,7 +321,7 @@ export default {
                 })
             })
             .catch(error => {
-              console.log(error)
+              // console.log(error)
               // this.$refs.loginForm.setErrors(error.response.data.error)
               this.$toast({
                 component: ToastificationContent,
