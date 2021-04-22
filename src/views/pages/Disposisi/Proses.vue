@@ -311,7 +311,7 @@ export default {
   },
   methods: {
     editDisposisi(e) {
-      if (this.jabatan.name === 'Staff SE') {
+      if (this.jabatan === 'authorized') {
         window.location.href = `edit-disposisi/${e}`
       } else {
         window.location.href = `detail-disposisi/${e}`

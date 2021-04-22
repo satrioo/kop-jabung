@@ -69,7 +69,7 @@
             v-b-tooltip.hover.right="'Klik untuk lihat Detail'"
             class="text-nowrap link-no"
             variant="outline-primary"
-            @click="editSurat(props.row.id)"
+            @click="detailSurat(props.row.id)"
           >{{ props.row.NoSurat }}</span>
         </span>
 
@@ -100,7 +100,7 @@
                   :icon="jabatan === 'authorized' ? 'Edit2Icon' : 'EyeIcon' "
                   class="mr-50"
                 />
-                <span>{{ jabatan === 'authorizedE' ? 'Edit' : 'Lihat' }} </span>
+                <span>{{ jabatan === 'authorized' ? 'Edit' : 'Lihat' }} </span>
               </b-dropdown-item>
               <!-- <b-dropdown-item>
                 <feather-icon
@@ -310,11 +310,14 @@ export default {
   },
   methods: {
     editSurat(e) {
-      if (this.jabatan.name === 'Staff SE') {
+      if (this.jabatan === 'authorized') {
         window.location.href = `edit-suratkeluar/${e}`
       } else {
         window.location.href = `detail-suratkeluar/${e}`
       }
+    },
+    detailSurat(e) {
+      window.location.href = `detail-suratkeluar/${e}`
     },
     async getSurat() {
       const { data } = await axios.get('api/v1/siap/outgoingletter/inboxs',

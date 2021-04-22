@@ -312,7 +312,11 @@ export default {
   },
   methods: {
     editDisposisi(e) {
-      window.location.href = `edit-disposisi/${e}`
+      if (this.jabatan === 'authorized') {
+        window.location.href = `edit-disposisi/${e}`
+      } else {
+        window.location.href = `detail-disposisi/${e}`
+      }
     },
     detailDisposisi(e) {
       window.location.href = `detail-disposisi/${e}`
