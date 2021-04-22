@@ -4,7 +4,7 @@
       to="/disposisi/tambah-disposisi"
     >
       <b-button
-        v-if="jabatan.name === 'Staff SE'"
+        v-if="jabatan === 'authorized'"
         variant="outline-primary"
         class="bg-gradient-primary"
         style="position: absolute; right: 20px; top: 15px;"
@@ -36,7 +36,7 @@
       :columns="columns"
       :rows="dataRows"
       :is-loading="loading"
-      :rtl="direction"
+
       style-class="vgt-table striped"
       :search-options="{
         enabled: true,
@@ -101,10 +101,10 @@
               </template>
               <b-dropdown-item @click="editDisposisi(props.row.id)">
                 <feather-icon
-                  :icon="jabatan.name === 'Staff SE' ? 'Edit2Icon' : 'EyeIcon' "
+                  :icon="jabatan === 'authorized' ? 'Edit2Icon' : 'EyeIcon' "
                   class="mr-50"
                 />
-                <span>{{ jabatan.name === 'Staff SE' ? 'Edit' : 'Lihat' }} </span>
+                <span>{{ jabatan === 'authorized' ? 'Edit' : 'Lihat' }} </span>
               </b-dropdown-item>
 
             </b-dropdown>
@@ -301,7 +301,11 @@ export default {
     },
   },
   created() {
-    this.jabatan = JSON.parse(localStorage.getItem('userData'))
+    if (JSON.parse(localStorage.getItem('permission')).find(e => e === 'SIAP.Disposition.Level.Z')) {
+      this.jabatan = 'authorized'
+    } else {
+      this.jabatan = 'unauthorized'
+    }
   },
   mounted() {
     this.getDisposisi()

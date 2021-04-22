@@ -20,7 +20,7 @@
     <vue-good-table
       :columns="columns"
       :rows="dataRows"
-      :rtl="direction"
+
       :search-options="{
         enabled: true,
         externalQuery: searchTerm }"

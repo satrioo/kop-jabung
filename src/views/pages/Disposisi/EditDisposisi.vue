@@ -374,7 +374,7 @@
       </b-row>
 
       <b-button
-        v-show="JabatanName === 'Staff SE' && $route.name == 'edit-disposisi'"
+        v-show="JabatanName === 'authorized' && $route.name == 'edit-disposisi'"
         variant="outline-primary"
         class="bg-gradient-primary "
         type="submit"
@@ -390,7 +390,7 @@
     </b-card-code>
 
     <b-card-code
-      v-show="JabatanName === 'Staff SE'"
+      v-show="JabatanName === 'authorized'"
       title="Perintah Disposisi"
     >
       <b-row class="match-height">
@@ -517,6 +517,13 @@ export default {
         { value: '3', text: 'Manajer Divisi Inti' },
         { value: '4', text: 'Kabag Keuangan' },
       ],
+    }
+  },
+  created() {
+    if (JSON.parse(localStorage.getItem('permission')).find(e => e === 'SIAP.Disposition.Level.Z')) {
+      this.JabatanName = 'authorized'
+    } else {
+      this.jabatan = 'unauthorized'
     }
   },
   mounted() {
@@ -697,7 +704,7 @@ export default {
       this.selectedFile = data.disposition.file.id
       this.url = data.disposition.file !== null ? data.disposition.file.url : 'tes'
       this.Jabatan = data.user.role_name
-      this.JabatanName = data.user.name
+      // this.JabatanName = data.user.name
       this.Komentar1 = data.decision.comment
       this.Komentar1_id = data.decision.id
       this.Komentar = data.responders.map(e => ({

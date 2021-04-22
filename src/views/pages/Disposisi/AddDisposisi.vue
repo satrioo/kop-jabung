@@ -2,26 +2,6 @@
   <validation-observer ref="simpleRules">
     <b-card-code title="Tulis Surat Masuk">
       <b-row class="match-height">
-        <!-- <b-col md="6">
-          <validation-provider
-            #default="{ errors }"
-            name="No. Surat"
-            rules="required"
-          >
-            <b-form-group
-              label="No. Surat"
-              label-for="NoSurat"
-            >
-              <b-form-input
-                id="NoSurat"
-                v-model="NoSurat"
-                placeholder="Input No. Surat"
-              />
-            </b-form-group>
-            <small class="text-danger">{{ errors[0] }}</small>
-          </validation-provider>
-        </b-col> -->
-
         <b-col md="12">
           <validation-provider
             #default="{ errors }"
