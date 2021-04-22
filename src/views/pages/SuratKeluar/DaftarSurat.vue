@@ -322,7 +322,6 @@ export default {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
-      console.log('DATA', data)
       this.dataRows = data.data.map(e => ({
         id: e.id,
         NoSurat: e.code,
