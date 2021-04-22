@@ -80,10 +80,13 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      if (JSON.parse(localStorage.getItem('userData')).name !== 'Staff SE') {
-        next('/disposisi/proses-disposisi')
-      } else {
+      // if (JSON.parse(localStorage.getItem('permission')).find(e => e !== 'SIAP.Disposition.Level.Z') === 'SIAP.Disposition.Level.Z') {
+      if (JSON.parse(localStorage.getItem('userData')).name === 'Staff SE') {
         next()
+      } else if (JSON.parse(localStorage.getItem('userData')).name === 'Super Admin') {
+        next()
+      } else {
+        next('/disposisi/proses-disposisi')
       }
     },
   },
