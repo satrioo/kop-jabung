@@ -73,7 +73,7 @@
             rules="required"
           >
             <b-form-group
-              label="Pengirim"
+              label="Pengirim Surat"
               label-for="Pengirim"
             >
               <b-form-input
@@ -200,7 +200,7 @@
           </b-form-group>
 
           <b-form-group
-            label="Untuk Dilihat"
+            label="Untuk Diperhatikan"
             label-for="dilihat"
             class="mt-2"
           >
@@ -291,7 +291,7 @@ export default {
   data() {
     return {
       NoSurat: '',
-      Deadline: '',
+      Deadline: 'ThreeDay',
       Perihal: '',
       Kategori: '',
       Pengirim: '',
@@ -303,13 +303,12 @@ export default {
       value: [],
       tags: [],
       dir: 'ltr',
-      selectedKeputusan: [],
+      selectedKeputusan: [{ value: '2', text: 'Ketua 1' }],
       selectedViewers: [],
       optionsDeadline: [
-        { value: '', text: 'Pilih Deadline' },
-        { value: 'OneDay', text: 'OneDay' },
-        { value: 'TwoDay', text: 'TwoDay' },
-        { value: 'ThreeDay', text: 'ThreeDay' },
+        { value: 'OneDay', text: 'One Day' },
+        { value: 'TwoDay', text: 'Two Day' },
+        { value: 'ThreeDay', text: 'Three Day' },
       ],
       optionsKategori: [
         { value: '', text: 'Pilih Kategori' },

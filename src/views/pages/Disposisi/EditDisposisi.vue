@@ -340,7 +340,7 @@
           </b-form-group>
 
           <b-form-group
-            label="Untuk Dilihat"
+            label="Untuk Diperhatikan"
             label-for="dilihat"
             class="mt-2"
           >
