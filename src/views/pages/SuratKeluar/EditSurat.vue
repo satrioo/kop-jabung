@@ -4,6 +4,16 @@
       title="Tulis Surat Masuk"
       :class="$route.name == 'detail-suratkeluar' ? 'detail-dispo' : ''"
     >
+      <b-button
+        v-show="$route.name === 'detail-suratkeluar' && jabatan === 'authorized'"
+        variant="outline-primary"
+        class="bg-gradient-primary mt-2"
+        style="position: absolute;right: 15px;top: -10px;"
+        type="submit"
+        @click.prevent="goEdit"
+      >
+        <span class="align-middle">Edit Surat Keluar</span>
+      </b-button>
       <b-row class="match-height">
         <b-col md="6">
           <validation-provider
@@ -155,7 +165,9 @@
 
     </b-card-code>
 
-    <b-card-code title="Validasi Surat Masuk">
+    <b-card-code
+      title="Validasi Surat Masuk"
+    >
       <b-form-group
         class="mb-5"
       >
@@ -169,7 +181,7 @@
     </b-card-code>
 
     <b-card-code
-      v-show="$route.name !== 'detail-suratkeluar'"
+      :class="$route.name == 'detail-suratkeluar' ? 'detail-dispo' : ''"
       title="Status Surat Keluar"
     >
       <b-row
@@ -222,6 +234,7 @@
         </b-col>
 
         <b-button
+          v-show="$route.name !== 'detail-suratkeluar' && jabatan === 'authorized'"
           variant="outline-primary"
           class="bg-gradient-primary mt-2"
           style="margin-left: 15px"
@@ -230,6 +243,7 @@
         >
           <span class="align-middle">Validasi</span>
         </b-button>
+
       </b-row>
     </b-card-code>
   </validation-observer>
@@ -293,11 +307,19 @@ export default {
       original_letter: '',
       validated_letter: '',
       activity: [],
+      jabatan: '',
       optionsStatus: [
         { value: 'Process', text: 'Proses' },
         { value: 'Approve', text: 'Disetujui' },
         { value: 'Reject', text: 'Ditolak' },
       ],
+    }
+  },
+  created() {
+    if (JSON.parse(localStorage.getItem('permission')).find(e => e === 'SIAP.Disposition.Level.Z')) {
+      this.jabatan = 'authorized'
+    } else {
+      this.jabatan = 'unauthorized'
     }
   },
   mounted() {
@@ -350,6 +372,10 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+
+    goEdit() {
+      window.location.href = `/surat-keluar/edit-suratkeluar/${this.$route.params.id}`
     },
 
     async editSurat() {

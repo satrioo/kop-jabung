@@ -79,7 +79,7 @@
               <b-form-input
                 id="Pengirim"
                 v-model="Pengirim"
-                placeholder="Input Pengirim"
+                placeholder="Input Pengirim Surat"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -141,6 +141,7 @@
               v-model="file"
               placeholder="Input File Surat"
               drop-placeholder="Drop file here..."
+              multiple
               @change="fileChange"
             />
           </b-form-group>
@@ -297,7 +298,8 @@ export default {
       Pengirim: '',
       Deskripsi: '',
       Catatan: '',
-      file: null,
+      // file: null,
+      file: [],
       fileName: '',
       privates: false,
       value: [],

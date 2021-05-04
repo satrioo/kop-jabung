@@ -4,6 +4,16 @@
       title="Tulis Surat Masuk"
       :class="$route.name == 'detail-disposisi' ? 'detail-dispo' : ''"
     >
+      <b-button
+        v-show="$route.name === 'detail-disposisi' && JabatanName === 'authorized'"
+        variant="outline-primary"
+        class="bg-gradient-primary mt-2"
+        style="position: absolute;right: 15px;top: -10px;"
+        type="submit"
+        @click.prevent="goEdit"
+      >
+        <span class="align-middle">Edit Disposisi</span>
+      </b-button>
       <b-row class="match-height">
         <b-col md="6">
           <validation-provider
@@ -89,12 +99,12 @@
           >
             <b-form-group
               label="Pengirim"
-              label-for="Pengirim"
+              label-for="Pengirim Surat"
             >
               <b-form-input
                 id="Pengirim"
                 v-model="Pengirim"
-                placeholder="Input Pengirim"
+                placeholder="Input Pengirim Surat"
               />
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
@@ -139,10 +149,7 @@
 
                 <div
                   v-if="gantiFile == false"
-                  style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;"
+                  class="fileSurat"
                 >
                   <div
                     class="open-file"
@@ -154,6 +161,7 @@
                     />
                     <h5 class="ml-1">
                       Open File
+                      <span> {{ fileTitle }} </span>
                     </h5>
                   </div>
 
@@ -214,22 +222,34 @@
                     class="input"
                     :class="Jabatan === selectedKeputusan[0].text ? '' : 'uncomment'"
                   >
-                    <h2> {{ selectedKeputusan[0].text }} </h2>
+                    <div class="komentar-title">
+                      <h2> {{ selectedKeputusan[0].text }} </h2>
+                      <span v-show="Komentar1_status === false"> (19-04-2021 - 12:12) </span>
+                    </div>
                     <b-input-group>
-                      <b-form-input
-                        v-model="Komentar1"
-                        :disabled="Jabatan !== selectedKeputusan[0].text"
-                        placeholder="Belum ada komentar"
-                      />
-                      <b-button
-                        v-show="Jabatan === selectedKeputusan[0].text"
-                        variant="outline-primary"
-                        class="bg-gradient-primary"
-                        style="border-radius: 0"
-                        @click="kirimKomentar1"
-                      >
-                        <span class="align-middle">Kirim</span>
-                      </b-button>
+                      <div class="komentar">
+                        <div class="left">
+                          <b-form-input
+                            v-model="Komentar1"
+                            :disabled="Jabatan !== selectedKeputusan[0].text"
+                            placeholder="Belum ada komentar"
+                          />
+                        </div>
+                        <div class="right">
+                          <b-button
+                            v-show="Jabatan === selectedKeputusan[0].text"
+                            variant="outline-primary"
+                            class="bg-gradient-primary btn-sm"
+                            style="font-size: 12px;height:unset"
+                            @click="kirimKomentar1"
+                          >
+                            <span
+                              class="align-middle"
+                            > {{ Komentar1_status !== false ? 'Tambah Komentar' : 'Update Komentar' }}</span>
+                          </b-button>
+                        </div>
+                      </div>
+
                     </b-input-group>
                   </div>
                 </div>
@@ -258,8 +278,37 @@
                     class="input"
                     :class="Jabatan === Komentar[index].nama ? '' : 'uncomment'"
                   >
-                    <h2> {{ option.nama }} </h2>
+                    <div class="komentar-title">
+                      <h2> {{ option.nama }} </h2>
+                      <span v-show="option.status !== false"> (19-04-2021 - 12:12) </span>
+                    </div>
+
                     <b-input-group>
+                      <div class="komentar">
+                        <div class="left">
+                          <b-form-input
+                            v-model="Komentar[index].komentar"
+                            placeholder="Belum ada komentar"
+                            :disabled="Komentar[index].nama !== Jabatan"
+                          />
+                        </div>
+                        <div class="right">
+                          <b-button
+                            v-show="Komentar[index].nama === Jabatan"
+                            variant="outline-primary"
+                            class="bg-gradient-primary btn-sm"
+                            style="font-size: 12px;height:unset"
+                            @click="kirimKomentar(index)"
+                          >
+                            <span
+                              class="align-middle"
+                            > {{ option.status === false ? 'Tambah Komentar' : 'Update Komentar' }}</span>
+                          </b-button>
+                        </div>
+                      </div>
+                    </b-input-group>
+
+                    <!-- <b-input-group>
                       <b-form-input
                         v-model="Komentar[index].komentar"
                         placeholder="Belum ada komentar"
@@ -274,7 +323,7 @@
                       >
                         <span class="align-middle">Kirim</span>
                       </b-button>
-                    </b-input-group>
+                    </b-input-group> -->
                   </div>
                 </div>
               </b-card-code>
@@ -423,6 +472,7 @@
 </template>
 
 <script>
+/* eslint-disable no-unneeded-ternary */
 /* eslint-disable vue/no-unused-components */
 import BCardCode from '@core/components/b-card-code/BCardCode.vue'
 import {
@@ -477,7 +527,8 @@ export default {
       JabatanName: '',
       Komentar1: '',
       Komentar1_id: '',
-      Komentar2: '',
+      Komentar1_status: false,
+
       dispoID: '',
       Komentar: [],
       Responder1: '',
@@ -490,6 +541,7 @@ export default {
       file: null,
       gantiFile: false,
       fileName: '',
+      fileTitle: '',
       url: '',
       selected: [],
       options: [],
@@ -552,6 +604,10 @@ export default {
       window.open(this.url, '_blank')
     },
 
+    goEdit() {
+      window.location.href = `/disposisi/edit-disposisi/${this.$route.params.id}`
+    },
+
     toggleFile() {
       if (this.gantiFile === false) {
         this.gantiFile = true
@@ -569,6 +625,9 @@ export default {
     },
 
     async kirimKomentar1() {
+      if (this.Komentar1_status === false) {
+        this.Komentar1_status = true
+      }
       await axios.post('api/v1/siap/disposition/comment', {
         comment: this.Komentar1,
         comment_id: this.Komentar1_id,
@@ -627,6 +686,7 @@ export default {
           {
             position: 'bottom-right',
           })
+          this.getDetail()
         })
         .catch(error => {
           this.$toast({
@@ -707,8 +767,15 @@ export default {
       // this.JabatanName = data.user.name
       this.Komentar1 = data.decision.comment
       this.Komentar1_id = data.decision.id
+
+      this.Komentar1_status = data.decision.comment !== null ? false : true
+      this.fileTitle = data.disposition.file.fullname
       this.Komentar = data.responders.map(e => ({
-        id: e.user_id, nama: e.role_name, komentar: e.comment, commentID: e.id,
+        id: e.user_id,
+        nama: e.role_name,
+        komentar: e.comment,
+        commentID: e.id,
+        status: e.comment === null ? false : true,
       }))
       this.selected = data.responders.map(e => ({ value: e.user_id, text: e.role_name }))
       this.selectedKeputusan.push({ text: data.decision.role_name, value: data.decision.user_id })
@@ -838,15 +905,54 @@ export default {
   }
 }
 
+.fileSurat{
+   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  span{
+    color: #a6a6a6;
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+  }
+}
+
 .tanggapan{
   display: flex;
   align-items: center;
   justify-content: space-around;
+  .komentar-title{
+    display: flex;
+    align-items: baseline;
+    span{
+      font-size: 12px;
+      margin-left: 10px ;
+    }
+  }
+  .komentar{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    .left{
+      flex-grow: 1;
+      margin-right: 10px;
+      span{
+        font-size: 14px;
+        display: block;
+        flex-grow: 1;
+        margin-right: 10px;
+      }
+    }
+  }
   .uncomment{
     input{
       border: unset !important;
-      border-left: solid 1px !important;
+      // border-left: solid 1px !important;
       border-radius: 0 !important;
+      padding-left: 0;
+      background: #fff;
+      color: #5e5873;
     }
   }
   input{
