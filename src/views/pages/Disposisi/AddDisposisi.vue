@@ -138,10 +138,12 @@
             <!-- Styled -->
             <b-form-file
               id="FileSurat"
+              ref="file"
               v-model="file"
+              type="file"
               placeholder="Input File Surat"
               drop-placeholder="Drop file here..."
-              multiple
+              multiple="multiple"
               @change="fileChange"
             />
           </b-form-group>
@@ -338,23 +340,50 @@ export default {
     this.getDecision()
   },
   methods: {
-    async fileChange(e) {
-      const files = e.target.files[0]
-      const image = new FormData()
-      image.append('file', files)
-      image.append('from', 1)
-      this.file = URL.createObjectURL(files)
-      // const { data } = await axios.post('/api/v1/file/upload', image)
-      const { data } = await axios.post('api/v1/file/upload',
-        image, {
-          headers:
-        {
-          'content-type': 'multipart/form-data; boundary=<calculated when request is sent>',
+    // async fileChange(e) {
+    //   const files = e.target.files[0]
+    //   const image = new FormData()
+    //   image.append('file', files)
+    //   image.append('from', 1)
+    //   this.file = URL.createObjectURL(files)
+    //   // const { data } = await axios.post('/api/v1/file/upload', image)
+    //   console.log(files)
+    //   const { data } = await axios.post('api/v1/file/upload',
+    //     image, {
+    //       headers:
+    //     {
+    //       'content-type': 'multipart/form-data; boundary=<calculated when request is sent>',
+    //       token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName),
+    //     },
+    //     })
+    //   this.fileName = data
+    // },
+
+    async fileChange() {
+      const formData = new FormData()
+
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < this.$refs.file.files.length; i++) {
+        const file = this.$refs.file.files[i]
+        console.log(file)
+        console.log(this.file.length)
+        formData.append(`files[${i}]`, file)
+        formData.append(`name[${this.name}]`, file)
+        formData.getAll('files', 'name')
+      }
+
+      // console.log(formData)
+      axios.post('/api/v1/file/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
           token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName),
+          'content-type': 'multipart/form-data; boundary=<calculated when request is sent>',
         },
+      }).then(() => {
+        this.file = []
+      })
+        .catch(() => {
         })
-      this.fileName = data
-      console.log(this.fileName)
     },
 
     validationForm() {

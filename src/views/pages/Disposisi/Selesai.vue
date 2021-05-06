@@ -13,7 +13,7 @@
           icon="PlusIcon"
           class="mr-50"
         />
-        <span class="align-middle text-light">Tambah Surat Masuk </span>
+        <span class="align-middle text-light">Tambah Disposisi </span>
       </b-button>
     </b-link>
     <!-- search input -->
