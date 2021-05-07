@@ -307,7 +307,7 @@ export default {
       value: [],
       tags: [],
       dir: 'ltr',
-      selectedKeputusan: [{ value: '2', text: 'Ketua 1' }],
+      selectedKeputusan: { value: '2', text: 'Ketua 1' },
       selectedViewers: [],
       optionsDeadline: [
         { value: 'OneDay', text: 'One Day' },
@@ -340,50 +340,19 @@ export default {
     this.getDecision()
   },
   methods: {
-    // async fileChange(e) {
-    //   const files = e.target.files[0]
-    //   const image = new FormData()
-    //   image.append('file', files)
-    //   image.append('from', 1)
-    //   this.file = URL.createObjectURL(files)
-    //   // const { data } = await axios.post('/api/v1/file/upload', image)
-    //   console.log(files)
-    //   const { data } = await axios.post('api/v1/file/upload',
-    //     image, {
-    //       headers:
-    //     {
-    //       'content-type': 'multipart/form-data; boundary=<calculated when request is sent>',
-    //       token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName),
-    //     },
-    //     })
-    //   this.fileName = data
-    // },
-
-    async fileChange() {
+    async fileChange(e) {
       const formData = new FormData()
-
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < this.$refs.file.files.length; i++) {
-        const file = this.$refs.file.files[i]
-        console.log(file)
-        console.log(this.file.length)
-        formData.append(`files[${i}]`, file)
-        formData.append(`name[${this.name}]`, file)
-        formData.getAll('files', 'name')
-      }
-
-      // console.log(formData)
-      axios.post('/api/v1/file/upload', formData, {
+      e.target.files.forEach(file => {
+        formData.append('files[]', file)
+      })
+      const { data } = await axios.post('/api/v1/file/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName),
           'content-type': 'multipart/form-data; boundary=<calculated when request is sent>',
         },
-      }).then(() => {
-        this.file = []
       })
-        .catch(() => {
-        })
+      this.fileName = data
     },
 
     validationForm() {
@@ -401,8 +370,7 @@ export default {
         from: this.Pengirim,
         dateline: this.Deadline,
         cat_name: this.Kategori,
-        file_id: this.fileName.id,
-        // file: this.fileName.file,
+        file: this.fileName.map(e => (e.id)),
         tags: this.tags,
         desc: this.Deskripsi,
         note: this.Catatan,
