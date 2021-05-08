@@ -810,7 +810,6 @@ export default {
     },
 
     async editDispo() {
-      console.log(this.fileName)
       await axios.post(`api/v1/siap/disposition/update/${this.dispoID}`, {
         cat_name: this.Kategori,
         title: this.Perihal,
