@@ -146,36 +146,37 @@
                 label="File Surat"
                 label-for="FileSurat"
               >
-
-                <div
-                  v-if="gantiFile == false"
-                  class="fileSurat"
-                >
+                <div v-if="gantiFile == false">
                   <div
-                    class="open-file"
-                    @click="openFile()"
+                    v-for="item in file"
+                    :key="item.id"
+                    class="fileSurat"
                   >
-                    <feather-icon
-                      icon="FileIcon"
-                      size="72"
-                    />
-                    <h5 class="ml-1">
-                      Open File
-                      <span> {{ fileTitle }} </span>
-                    </h5>
+                    <div
+                      class="open-file"
+                      @click="openFile(item.url)"
+                    >
+                      <feather-icon
+                        icon="FileIcon"
+                        size="56"
+                      />
+                      <h5 class="ml-1">
+                        Open File
+                        <span> {{ item.fullname }} </span>
+                      </h5>
+                    </div>
                   </div>
 
                   <b-button
                     v-show="$route.name === 'edit-disposisi'"
                     v-model="gantiFile"
                     variant="outline-primary"
-                    class="bg-gradient-primary "
+                    class="bg-gradient-primary mt-1 ml-1"
                     @click.prevent="toggleFile"
                   >
                     <span class="align-middle">Ganti File</span>
                   </b-button>
                 </div>
-
                 <div
                   v-else
                   style="
@@ -186,9 +187,12 @@
                 >
                   <b-form-file
                     id="FileSurat"
+                    ref="file"
                     v-model="file"
+                    type="file"
                     placeholder="Input File Surat"
                     drop-placeholder="Drop file here..."
+                    multiple="multiple"
                     @change="fileChange"
                   />
 
@@ -224,7 +228,7 @@
                   >
                     <div class="komentar-title">
                       <h2> {{ selectedKeputusan[0].text }} </h2>
-                      <span v-show="Komentar1_status === false"> (19-04-2021 - 12:12) </span>
+                      <span v-show="Komentar1Status === false"> ({{ Komentar1_time }}) </span>
                     </div>
                     <b-input-group>
                       <div class="komentar">
@@ -245,7 +249,7 @@
                           >
                             <span
                               class="align-middle"
-                            > {{ Komentar1_status !== false ? 'Tambah Komentar' : 'Update Komentar' }}</span>
+                            > {{ Komentar1Status !== false ? 'Tambah Komentar' : 'Update Komentar' }}</span>
                           </b-button>
                         </div>
                       </div>
@@ -280,7 +284,7 @@
                   >
                     <div class="komentar-title">
                       <h2> {{ option.nama }} </h2>
-                      <span v-show="option.status !== false"> (19-04-2021 - 12:12) </span>
+                      <span v-show="option.status !== false"> ({{ option.time }}) </span>
                     </div>
 
                     <b-input-group>
@@ -526,8 +530,9 @@ export default {
       Jabatan: '',
       JabatanName: '',
       Komentar1: '',
-      Komentar1_id: '',
-      Komentar1_status: false,
+      Komentar1ID: '',
+      Komentar1Time: '',
+      Komentar1Status: false,
 
       dispoID: '',
       Komentar: [],
@@ -538,10 +543,9 @@ export default {
       selectedPerintah: [],
       selectedViewers: [],
       privates: false,
-      file: null,
+      file: [],
       gantiFile: false,
       fileName: '',
-      fileTitle: '',
       url: '',
       selected: [],
       options: [],
@@ -584,24 +588,22 @@ export default {
   },
   methods: {
     async fileChange(e) {
-      const files = e.target.files[0]
-      const image = new FormData()
-      image.append('file', files)
-      image.append('from', 1)
-      this.file = URL.createObjectURL(files)
-      const { data } = await axios.post('api/v1/file/upload',
-        image, {
-          headers:
-        {
-          'content-type': 'multipart/form-data; boundary=<calculated when request is sent>',
+      const formData = new FormData()
+      e.target.files.forEach(file => {
+        formData.append('files[]', file)
+      })
+      const { data } = await axios.post('/api/v1/file/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
           token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName),
+          'content-type': 'multipart/form-data; boundary=<calculated when request is sent>',
         },
-        })
+      })
       this.fileName = data
     },
 
-    openFile() {
-      window.open(this.url, '_blank')
+    openFile(e) {
+      window.open(e, '_blank')
     },
 
     goEdit() {
@@ -625,12 +627,12 @@ export default {
     },
 
     async kirimKomentar1() {
-      if (this.Komentar1_status === false) {
-        this.Komentar1_status = true
+      if (this.Komentar1Status === false) {
+        this.Komentar1Status = true
       }
       await axios.post('api/v1/siap/disposition/comment', {
         comment: this.Komentar1,
-        comment_id: this.Komentar1_id,
+        comment_id: this.Komentar1ID,
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
@@ -648,6 +650,7 @@ export default {
           {
             position: 'bottom-right',
           })
+          this.getDetail()
         })
         .catch(error => {
           this.$toast({
@@ -762,20 +765,20 @@ export default {
       this.Catatan = data.disposition.note
       this.userRole = roleName.role.name
       this.selectedFile = data.disposition.file.id
-      this.url = data.disposition.file !== null ? data.disposition.file.url : 'tes'
       this.Jabatan = data.user.role_name
       // this.JabatanName = data.user.name
       this.Komentar1 = data.decision.comment
-      this.Komentar1_id = data.decision.id
-
-      this.Komentar1_status = data.decision.comment !== null ? false : true
-      this.fileTitle = data.disposition.file.fullname
+      this.Komentar1ID = data.decision.id
+      this.Komentar1_time = dayjs(data.decision.updated_at).format('DD-MM-YYYY - HH:mm')
+      this.Komentar1Status = data.decision.comment !== null ? false : true
+      this.file = data.disposition.file
       this.Komentar = data.responders.map(e => ({
         id: e.user_id,
         nama: e.role_name,
         komentar: e.comment,
         commentID: e.id,
         status: e.comment === null ? false : true,
+        time: dayjs(e.updated_at).format('DD-MM-YYYY - HH:mm'),
       }))
       this.selected = data.responders.map(e => ({ value: e.user_id, text: e.role_name }))
       this.selectedKeputusan.push({ text: data.decision.role_name, value: data.decision.user_id })
@@ -806,31 +809,15 @@ export default {
       //   })
     },
 
-    downloadItem() {
-      axios.get(this.url,
-        {
-          responseType: 'blob',
-          headers:
-        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
-        })
-        .then(response => {
-          const blob = new Blob([response.data])
-          const link = document.createElement('a')
-          link.href = URL.createObjectURL(blob)
-          link.download = this.NoSurat
-          link.click()
-          URL.revokeObjectURL(link.href)
-        })
-    },
-
     async editDispo() {
+      console.log(this.fileName)
       await axios.post(`api/v1/siap/disposition/update/${this.dispoID}`, {
         cat_name: this.Kategori,
         title: this.Perihal,
         from: this.Pengirim,
         dateline: this.Deadline,
-        // file: this.fileName.file,
-        file_id: this.fileName === '' ? this.selectedFile : this.fileName.id,
+        file: this.fileName.map(e => (e.id)),
+        // file_id: this.fileName === '' ? this.selectedFile : this.fileName.id,
         desc: this.Deskripsi,
         note: this.Catatan,
         private: this.privates,
@@ -925,7 +912,7 @@ export default {
     display: flex;
     align-items: baseline;
     span{
-      font-size: 12px;
+      font-size: 13px;
       margin-left: 10px ;
     }
   }
@@ -1001,6 +988,7 @@ export default {
   display: flex;
   cursor: pointer;
   align-items: center;
+  width: 100%;
   padding: 10px;
   border-radius: 14px;
   transition: background-color 0.5s ease;
