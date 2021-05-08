@@ -544,6 +544,7 @@ export default {
       selectedViewers: [],
       privates: false,
       file: [],
+      fileID: [],
       gantiFile: false,
       fileName: '',
       url: '',
@@ -764,7 +765,6 @@ export default {
       this.Deskripsi = data.disposition.desc
       this.Catatan = data.disposition.note
       this.userRole = roleName.role.name
-      this.selectedFile = data.disposition.file.id
       this.Jabatan = data.user.role_name
       // this.JabatanName = data.user.name
       this.Komentar1 = data.decision.comment
@@ -816,7 +816,7 @@ export default {
         title: this.Perihal,
         from: this.Pengirim,
         dateline: this.Deadline,
-        file: this.fileName.map(e => (e.id)),
+        file: this.file.map(e => (e.id)),
         // file_id: this.fileName === '' ? this.selectedFile : this.fileName.id,
         desc: this.Deskripsi,
         note: this.Catatan,
