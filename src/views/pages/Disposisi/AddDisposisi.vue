@@ -399,9 +399,9 @@ export default {
           // this.$router.push({ name: `detail-disposisi/${response.data.data.id}` })
           window.location.href = `detail-disposisi/${response.data.data.id}`
         })
-        .catch(error => {
-          console.log(error)
-        })
+        // .catch(error => {
+        //   console.log(error)
+        // })
     },
 
     async getRole() {
