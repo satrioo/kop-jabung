@@ -354,10 +354,10 @@ export default {
       this.original_letter = data.original_letter
       this.validated_letter = data.validated_letter === null ? data.original_letter : data.validated_letter
       this.status = data.status_letter
-      console.log(data)
-        .catch(error => {
-          console.log(error)
-        })
+      // console.log(data)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
     },
 
     async getActifity() {
@@ -368,10 +368,10 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
       this.activity = data
-      console.log(data)
-        .catch(error => {
-          console.log(error)
-        })
+      // console.log(data)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
     },
 
     goEdit() {
@@ -395,7 +395,6 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
         .then(response => {
-          console.log(response)
           this.$toast({
             component: ToastificationContent,
             props: {
@@ -410,7 +409,6 @@ export default {
           })
         })
         .catch(error => {
-          console.log('asdasd', error.response)
           this.$toast({
             component: ToastificationContent,
             props: {
