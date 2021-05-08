@@ -540,7 +540,7 @@ export default {
       userRole: '',
       selectedFile: '',
       selectedKeputusan: [],
-      selectedPerintah: [],
+      selectedPerintah: '',
       selectedViewers: [],
       privates: false,
       file: [],
@@ -785,7 +785,7 @@ export default {
       this.selectedViewers = data.supervisors.map(e => ({ value: e.id, text: e.role_name }))
       // this.optionsResponder.push(data.responders.map(e => ({ value: e.role_id, text: e.role_name })))
       this.privates = data.disposition.private !== 0
-
+      this.selectedPerintah = data.receiver.role_name
       // this.options = data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name }))
       // this.options.push(data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name })))
       this.tags = data.disposition.tags.map(e => (e.name))
@@ -815,7 +815,7 @@ export default {
         cat_name: this.Kategori,
         title: this.Perihal,
         from: this.Pengirim,
-        dateline: this.Deadline,
+        // dateline: this.Deadline,
         file: this.file.map(e => (e.id)),
         // file_id: this.fileName === '' ? this.selectedFile : this.fileName.id,
         desc: this.Deskripsi,

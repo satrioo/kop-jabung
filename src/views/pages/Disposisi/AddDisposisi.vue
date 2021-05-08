@@ -383,7 +383,7 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
       })
         .then(response => {
-          // console.log(response)
+          // console.log(response.data.data.id)
           this.$toast({
             component: ToastificationContent,
             props: {
@@ -396,7 +396,8 @@ export default {
           {
             position: 'bottom-right',
           })
-          this.$router.push({ name: 'proses-disposisi' })
+          // this.$router.push({ name: `detail-disposisi/${response.data.data.id}` })
+          window.location.href = `detail-disposisi/${response.data.data.id}`
         })
         .catch(error => {
           console.log(error)

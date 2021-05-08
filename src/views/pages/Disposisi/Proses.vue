@@ -330,7 +330,7 @@ export default {
           },
         })
       this.dataRows = data.data.map(e => ({
-        id: e.id,
+        id: e.disposition.id,
         NoDisposisi: e.disposition !== null ? e.disposition.code : 'data kosong',
         Perihal: e.disposition !== null ? e.disposition.title : 'data kosong',
         Waktu: e.disposition !== null ? dayjs(e.disposition.date).format('DD-MM-YYYY') : 'data kosong',

@@ -212,6 +212,17 @@
               rows="3"
             />
           </b-form-group>
+
+          <b-button
+            v-show="$route.name !== 'detail-suratkeluar' && jabatan === 'authorized'"
+            variant="outline-primary"
+            class="bg-gradient-primary mt-2"
+            style="width: 100px;"
+            type="submit"
+            @click.prevent="validationForm"
+          >
+            <span class="align-middle">Validasi</span>
+          </b-button>
         </b-col>
         <b-col
           offset-md="1"
@@ -232,17 +243,6 @@
             </div>
           </div>
         </b-col>
-
-        <b-button
-          v-show="$route.name !== 'detail-suratkeluar' && jabatan === 'authorized'"
-          variant="outline-primary"
-          class="bg-gradient-primary mt-2"
-          style="margin-left: 15px"
-          type="submit"
-          @click.prevent="validationForm"
-        >
-          <span class="align-middle">Validasi</span>
-        </b-button>
 
       </b-row>
     </b-card-code>
@@ -354,6 +354,12 @@ export default {
       this.original_letter = data.original_letter
       this.validated_letter = data.validated_letter === null ? data.original_letter : data.validated_letter
       this.status = data.status_letter
+      if (this.status === 'Approved') {
+        this.status = 'Approve'
+      } else if (this.status === 'Rejected') {
+        this.status = 'Reject'
+      }
+      // this.status = data.map(e => ({ value: e.status, text: e.status_letter }))
       // console.log(data)
       //   .catch(error => {
       //     console.log(error)

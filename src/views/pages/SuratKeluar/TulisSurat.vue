@@ -233,7 +233,7 @@ export default {
         agency: this.agency,
         cat_name: this.cat_name,
         original_letter: this.original_letter,
-        note: this.Perihal,
+        // note: this.Perihal,
         address: this.address,
       }, {
         headers:
@@ -253,6 +253,7 @@ export default {
           {
             position: 'bottom-right',
           })
+          window.location.href = `detail-suratkeluar/${response.data.data.id}`
         })
         .catch(error => {
           this.$toast({
