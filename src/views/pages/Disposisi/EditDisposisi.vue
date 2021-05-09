@@ -817,7 +817,6 @@ export default {
           params:
         { viewers: 1 },
         })
-      console.log(data)
       this.optionsPerintah = data.map(e => ({ value: e.id, text: e.name }))
       //   .catch(error => {
       //     console.log(error)
