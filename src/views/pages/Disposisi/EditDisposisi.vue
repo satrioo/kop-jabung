@@ -453,7 +453,7 @@
             :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
             label="text"
             placeholder="Pilih Tujuan Perintah Disposisi"
-            :options="optionsKeputusan"
+            :options="optionsPerintah"
           />
         </b-col>
       </b-row>
@@ -540,7 +540,7 @@ export default {
       userRole: '',
       selectedFile: '',
       selectedKeputusan: [],
-      selectedPerintah: '',
+      selectedPerintah: [],
       selectedViewers: [],
       privates: false,
       file: [],
@@ -586,6 +586,7 @@ export default {
   mounted() {
     this.getResponder()
     this.getDetail()
+    this.getPerintah()
   },
   methods: {
     async fileChange(e) {
@@ -766,7 +767,6 @@ export default {
       this.Catatan = data.disposition.note
       this.userRole = roleName.role.name
       this.Jabatan = data.user.role_name
-      // this.JabatanName = data.user.name
       this.Komentar1 = data.decision.comment
       this.Komentar1ID = data.decision.id
       this.Komentar1_time = dayjs(data.decision.updated_at).format('DD-MM-YYYY - HH:mm')
@@ -785,7 +785,7 @@ export default {
       this.selectedViewers = data.supervisors.map(e => ({ value: e.id, text: e.role_name }))
       // this.optionsResponder.push(data.responders.map(e => ({ value: e.role_id, text: e.role_name })))
       this.privates = data.disposition.private !== 0
-      this.selectedPerintah = data.receiver.role_name
+      this.selectedPerintah = { value: data.receiver.id, text: data.receiver.role_name }
       // this.options = data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name }))
       // this.options.push(data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name })))
       this.tags = data.disposition.tags.map(e => (e.name))
@@ -804,6 +804,21 @@ export default {
       this.optionsKeputusan = data.map(e => ({ value: e.id, text: e.name }))
       this.optionsViewers = data.map(e => ({ value: e.id, text: e.name }))
       // console.log('option', this.option)
+      //   .catch(error => {
+      //     console.log(error)
+      //   })
+    },
+
+    async getPerintah() {
+      const { data } = await axios.get('api/v1/siap/disposition/responders',
+        {
+          headers:
+        { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+          params:
+        { viewers: 1 },
+        })
+      console.log(data)
+      this.optionsPerintah = data.map(e => ({ value: e.id, text: e.name }))
       //   .catch(error => {
       //     console.log(error)
       //   })
