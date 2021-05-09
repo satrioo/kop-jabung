@@ -28,6 +28,7 @@
               <b-form-input
                 id="No.Surat Keluar"
                 v-model="NoSurat"
+                disabled
                 placeholder="Input No. Surat Keluar"
               />
             </b-form-group>
@@ -237,9 +238,9 @@
               <img :src="require('@/assets/images/icons/user.png')">
             </div>
             <div class="text">
-              <h2> {{ option.user.name }} </h2>
-              <h4> 12-03-2021 09:00 WIB </h4>
-              <h3> {{ option.message_id }} </h3>
+              <h2> {{ option.name }} </h2>
+              <h4> {{ option.time }}  </h4>
+              <h3> {{ option.text }} </h3>
             </div>
           </div>
         </b-col>
@@ -262,7 +263,7 @@ import axios from '@axios'
 import useJwt from '@/auth/jwt/useJwt'
 import { quillEditor } from 'vue-quill-editor'
 import ToastificationContent from '@core/components/toastification/ToastificationContent.vue'
-
+import dayjs from 'dayjs'
 import 'quill/dist/quill.core.css'
 // eslint-disable-next-line
 import 'quill/dist/quill.snow.css'
@@ -304,6 +305,7 @@ export default {
       title: '',
       Perihal: '',
       status: '',
+      time: '',
       original_letter: '',
       validated_letter: '',
       activity: [],
@@ -348,6 +350,7 @@ export default {
       this.to = data.to
       this.agency = data.agency
       this.note = data.note
+      this.time = dayjs(data.updated_at).format('DD-MM-YYYY')
       this.address = data.address
       this.title = data.title
       this.Perihal = data.title
@@ -373,7 +376,12 @@ export default {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
         })
-      this.activity = data
+      this.activity = data.map(e => ({
+        name: e.user.name,
+        time: dayjs(e.updated_at).format('DD-MM-YYYY - HH:mm'),
+        text: e.message_id,
+      }))
+
       // console.log(data)
       //   .catch(error => {
       //     console.log(error)
@@ -457,7 +465,7 @@ export default {
   justify-content: end;
   margin: 5px 0;
   .avatar{
-    width: 80px;
+    width: 70px;
     margin-right: 20px;
     img{
       width: 100%;
