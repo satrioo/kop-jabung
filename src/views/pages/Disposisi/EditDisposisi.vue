@@ -785,7 +785,7 @@ export default {
       this.selectedViewers = data.supervisors.map(e => ({ value: e.id, text: e.role_name }))
       // this.optionsResponder.push(data.responders.map(e => ({ value: e.role_id, text: e.role_name })))
       this.privates = data.disposition.private !== 0
-      this.selectedPerintah = { value: data.receiver.id, text: data.receiver.role_name }
+      this.selectedPerintah = data.receiver.id === null ? { value: '', text: 'Pilih Tujuan' } : { value: data.receiver.id, text: data.receiver.role_name }
       // this.options = data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name }))
       // this.options.push(data.disposition.forward_dispositions.map(e => ({ item: e.role_id, name: e.role_name })))
       this.tags = data.disposition.tags.map(e => (e.name))
