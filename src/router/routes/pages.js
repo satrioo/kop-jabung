@@ -202,4 +202,18 @@ export default [
       ],
     },
   },
+  {
+    path: '/permintaan-data/pengajuan',
+    name: 'permintaan-data-pengajuan',
+    component: () => import('@/views/pages/PermintaanData/Pengajuan.vue'),
+    meta: {
+      pageTitle: 'Pengajuan Permintaan Data',
+      breadcrumb: [
+        {
+          text: 'Pengajuan Permintaan Data',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

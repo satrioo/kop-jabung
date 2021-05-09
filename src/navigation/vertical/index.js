@@ -44,7 +44,7 @@ export default [
     children: [
       {
         title: 'Proses Pengajuan',
-        route: 'dashboard-ecommerce',
+        route: 'permintaan-data-pengajuan',
       },
       {
         title: 'Daftar Permintaan',

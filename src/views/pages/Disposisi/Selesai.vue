@@ -120,7 +120,6 @@
       <!-- pagination -->
       <template
         slot="pagination-bottom"
-        slot-scope="props"
       >
         <div class="d-flex justify-content-between flex-wrap">
           <div class="d-flex align-items-center mb-0 mt-1">
@@ -129,24 +128,24 @@
             </span>
             <b-form-select
               v-model="pageLength"
-              :options="['5','10','20','50']"
+              :options="['5','10','20','50','100']"
               class="mx-1"
-              @input="(value)=>props.perPageChanged({currentPerPage:value})"
+              @input="(value)=>generatPageLength({currentPerPage:value})"
             />
-            <span class="text-nowrap"> of {{ props.total }} entries </span>
+            <span class="text-nowrap"> of {{ totalRow }} entries </span>
           </div>
           <div>
             <b-pagination
               :value="1"
-              :total-rows="props.total"
-              :per-page="pageLength"
+              :total-rows="totalPage"
+              :per-page="totalRow"
               first-number
               last-number
               align="right"
               prev-class="prev-item"
               next-class="next-item"
               class="mt-1 mb-0"
-              @input="(value)=>props.pageChanged({currentPage:value})"
+              @input="(value)=>generatePage({currentPage:value})"
             >
               <template #prev-text>
                 <feather-icon
@@ -211,8 +210,11 @@ export default {
   data() {
     return {
       pageTitle: '',
+      totalPage: 0,
+      totalRow: 0,
+      page: 0,
       loading: true,
-      pageLength: 10,
+      pageLength: '10',
       dir: false,
       // codeBasic,
       columns: [
@@ -321,6 +323,14 @@ export default {
     detailDisposisi(e) {
       window.location.href = `detail-disposisi/${e}`
     },
+    generatePage(val) {
+      this.page = val.currentPage
+      this.getDisposisi()
+    },
+    generatPageLength(val) {
+      this.pageLength = val.currentPerPage
+      this.getDisposisi()
+    },
     async getDisposisi() {
       const { data } = await axios.get('api/v1/siap/disposition/inboxs',
         {
@@ -328,8 +338,12 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
           params: {
             status: [1, 2],
+            page: this.page === 0 ? null : this.page,
+            limit: this.pageLength,
           },
         })
+      this.totalPage = data.total
+      this.totalRow = data.per_page
       this.dataRows = data.data.map(e => ({
         id: e.disposition.id,
         NoDisposisi: e.disposition !== null ? e.disposition.code : 'data kosong',
@@ -338,9 +352,9 @@ export default {
         Deadline: e.disposition !== null ? dayjs(e.disposition.dateline).format('DD-MM-YYYY') : 'data kosong',
         Pengirim: e.disposition !== null ? e.disposition.from : 'data kosong',
         Status: e.disposition !== null ? e.disposition.status_letter : 'data kosong',
-        // Komentar: e.disposition !== null ? e.responders.map(y => ({ id: y.id, nama: y.role_name, komentar: y.comment })) : 'data kosong',
         Aksi: '',
       }))
+      console.log(this.dataRows)
       this.loading = false
       // console.log('datarows', this.dataRows)
       //   .catch(error => {
