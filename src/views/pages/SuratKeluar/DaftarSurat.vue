@@ -52,7 +52,7 @@
       }"
       :pagination-options="{
         enabled: true,
-        perPage:pageLength
+        perPage:100
       }"
     >
       <template
@@ -131,17 +131,17 @@
             </span>
             <b-form-select
               v-model="pageLength"
-              :options="['5','10','20','50']"
+              :options="['5','10','20','50','100']"
               class="mx-1"
               @input="(value)=>props.perPageChanged({currentPerPage:value})"
             />
-            <span class="text-nowrap"> of {{ props.total }} entries </span>
+            <span class="text-nowrap"> of {{ totalPage }} entries </span>
           </div>
           <div>
             <b-pagination
               :value="1"
-              :total-rows="props.total"
-              :per-page="pageLength"
+              :total-rows="totalPage"
+              :per-page="totalRow"
               first-number
               last-number
               align="right"
@@ -207,6 +207,9 @@ export default {
       pageLength: 10,
       dir: false,
       jabatan: '',
+      totalPage: 0,
+      totalRow: 0,
+      page: 0,
       loading: true,
       // codeBasic,
       columns: [
@@ -324,7 +327,14 @@ export default {
         {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+          params: {
+
+            page: this.page === 0 ? null : this.page,
+            limit: this.pageLength,
+          },
         })
+      this.totalPage = data.total
+      this.totalRow = data.per_page
       this.dataRows = data.data.map(e => ({
         id: e.id,
         NoSurat: e.code,

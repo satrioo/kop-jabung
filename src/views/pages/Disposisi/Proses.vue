@@ -51,7 +51,7 @@
       }"
       :pagination-options="{
         enabled: true,
-        perPage:pageLength
+        perPage:100
       }"
     >
       <template
@@ -131,13 +131,13 @@
               class="mx-1"
               @input="(value)=>props.perPageChanged({currentPerPage:value})"
             />
-            <span class="text-nowrap"> of {{ props.total }} entries </span>
+            <span class="text-nowrap"> of {{ totalPage }} entries </span>
           </div>
           <div>
             <b-pagination
               :value="1"
-              :total-rows="props.total"
-              :per-page="pageLength"
+              :total-rows="totalPage"
+              :per-page="totalRow"
               first-number
               last-number
               align="right"
@@ -212,6 +212,9 @@ export default {
       loading: true,
       pageLength: 10,
       dir: false,
+      totalPage: 0,
+      totalRow: 0,
+      page: 0,
       // codeBasic,
       columns: [
         {
@@ -327,8 +330,12 @@ export default {
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
           params: {
             'status[]': 0,
+            page: this.page === 0 ? null : this.page,
+            limit: this.pageLength,
           },
         })
+      this.totalPage = data.total
+      this.totalRow = data.per_page
       this.dataRows = data.data.map(e => ({
         id: e.disposition.id,
         NoDisposisi: e.disposition !== null ? e.disposition.code : 'data kosong',

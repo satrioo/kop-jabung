@@ -52,7 +52,7 @@
       }"
       :pagination-options="{
         enabled: true,
-        perPage:pageLength
+        perPage:100
       }"
     >
       <template
@@ -132,7 +132,7 @@
               class="mx-1"
               @input="(value)=>generatPageLength({currentPerPage:value})"
             />
-            <span class="text-nowrap"> of {{ totalRow }} entries </span>
+            <span class="text-nowrap"> of {{ totalPage }} entries </span>
           </div>
           <div>
             <b-pagination
@@ -354,7 +354,6 @@ export default {
         Status: e.disposition !== null ? e.disposition.status_letter : 'data kosong',
         Aksi: '',
       }))
-      console.log(this.dataRows)
       this.loading = false
       // console.log('datarows', this.dataRows)
       //   .catch(error => {

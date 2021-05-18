@@ -84,7 +84,6 @@
                 type="file"
                 placeholder="Input File Surat"
                 drop-placeholder="Drop file here..."
-                multiple="multiple"
                 @change="fileChange"
               />
             </b-form-group>
@@ -225,7 +224,7 @@ export default {
         agency: this.instansi,
         phone: this.number,
         desc: this.requestedData,
-        file_id: this.fileName.map(e => (e.id)),
+        file_id: this.fileName[0].id,
       }, {
         headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },

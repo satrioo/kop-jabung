@@ -216,4 +216,18 @@ export default [
       ],
     },
   },
+  {
+    path: '/permintaan-data/daftar',
+    name: 'daftar-permintaan-data',
+    component: () => import('@/views/pages/PermintaanData/Daftar.vue'),
+    meta: {
+      pageTitle: 'Daftar Permintaan Data',
+      breadcrumb: [
+        {
+          text: 'Daftar Permintaan Data',
+          active: true,
+        },
+      ],
+    },
+  },
 ]

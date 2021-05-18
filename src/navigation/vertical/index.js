@@ -48,7 +48,7 @@ export default [
       },
       {
         title: 'Daftar Permintaan',
-        route: 'dashboard-analytics',
+        route: 'daftar-permintaan-data',
       },
     ],
   },
