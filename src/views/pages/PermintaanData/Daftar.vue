@@ -62,7 +62,7 @@
 
         <!-- Column: Name -->
         <span
-          v-if="props.column.field === 'NoDisposisi'"
+          v-if="props.column.field === 'NoTiket'"
           class="text-nowrap"
         >
           <span
@@ -70,7 +70,7 @@
             class="text-nowrap link-no"
             variant="outline-primary"
             @click="detailDisposisi(props.row.id)"
-          >{{ props.row.NoDisposisi }}</span>
+          >{{ props.row.NoTiket }}</span>
         </span>
 
         <!-- Column: Status -->
@@ -306,13 +306,13 @@ export default {
   methods: {
     editDisposisi(e) {
       if (this.jabatan === 'authorized') {
-        window.location.href = `edit-disposisi/${e}`
+        window.location.href = `edit/${e}`
       } else {
-        window.location.href = `detail-disposisi/${e}`
+        window.location.href = `detail/${e}`
       }
     },
     detailDisposisi(e) {
-      window.location.href = `detail-disposisi/${e}`
+      window.location.href = `detail/${e}`
     },
     generatePage(val) {
       this.page = val.currentPage
@@ -332,11 +332,10 @@ export default {
             limit: this.pageLength,
           },
         })
-      console.log(data)
       this.totalPage = data.total
       this.totalRow = data.per_page
       this.dataRows = data.data.map(e => ({
-        id: e.request_data.id,
+        id: e.id,
         NoTiket: e.request_data !== null ? e.request_data.code : 'data kosong',
         DataYangDiminta: e.request_data !== null ? e.request_data.desc : 'data kosong',
         Waktu: e.request_data !== null ? dayjs(e.request_data.created_at).format('DD-MM-YYYY HH:mm') : 'data kosong',

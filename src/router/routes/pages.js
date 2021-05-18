@@ -230,4 +230,32 @@ export default [
       ],
     },
   },
+  {
+    path: '/permintaan-data/edit/:id',
+    name: 'edit-permintaan-data',
+    component: () => import('@/views/pages/PermintaanData/Edit.vue'),
+    meta: {
+      pageTitle: 'Edit Permintaan Data',
+      breadcrumb: [
+        {
+          text: 'Edit Permintaan Data',
+          active: true,
+        },
+      ],
+    },
+  },
+  {
+    path: '/permintaan-data/detail/:id',
+    name: 'detail-permintaan-data',
+    component: () => import('@/views/pages/PermintaanData/Edit.vue'),
+    meta: {
+      pageTitle: 'Detail Permintaan Data',
+      breadcrumb: [
+        {
+          text: 'Detail Permintaan Data',
+          active: true,
+        },
+      ],
+    },
+  },
 ]
