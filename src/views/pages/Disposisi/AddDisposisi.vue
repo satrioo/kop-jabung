@@ -310,9 +310,9 @@ export default {
       selectedKeputusan: { value: '2', text: 'Ketua 1' },
       selectedViewers: [],
       optionsDeadline: [
-        { value: 'OneDay', text: 'One Day' },
-        { value: 'TwoDay', text: 'Two Day' },
-        { value: 'ThreeDay', text: 'Three Day' },
+        { value: 'OneDay', text: 'Satu Hari' },
+        { value: 'TwoDay', text: 'Dua Hari' },
+        { value: 'ThreeDay', text: 'Tiga hari' },
       ],
       optionsKategori: [
         { value: '', text: 'Pilih Kategori' },
@@ -409,6 +409,8 @@ export default {
         {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+          params:
+        { viewers: 1 },
         })
 
       this.options = data.map(e => ({ value: e.id, text: e.name }))

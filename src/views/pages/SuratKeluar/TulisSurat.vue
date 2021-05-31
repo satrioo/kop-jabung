@@ -127,14 +127,22 @@
       </b-row>
 
       <b-row class="match-height">
-        <b-col md="12 mb-3">
+        <b-col md="12">
           <b-form-group
-            label="Isi surat"
+            label="File Surat"
+            label-for="FileSurat"
+            class="mt-1"
           >
-            <quill-editor
-              v-model="original_letter"
-              :options="snowOption"
-              style="height: 250px"
+            <!-- Styled -->
+            <b-form-file
+              id="FileSurat"
+              ref="file"
+              v-model="file"
+              type="file"
+              placeholder="Input File Surat"
+              drop-placeholder="Drop file here..."
+              multiple="multiple"
+              @change="fileChange"
             />
           </b-form-group>
         </b-col>
