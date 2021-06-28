@@ -147,26 +147,6 @@
               @change="fileChange"
             />
           </b-form-group>
-        </b-col>
-        <b-col md="6">
-          <label for="textarea-default">Deskripsi</label>
-          <b-form-textarea
-            id="textarea-default"
-            v-model="Deskripsi"
-            placeholder="Textarea"
-            rows="3"
-          />
-
-          <label
-            for="textarea-default"
-            class="mt-2"
-          >Catatan</label>
-          <b-form-textarea
-            id="textarea-default"
-            v-model="Catatan"
-            placeholder="Textarea"
-            rows="3"
-          />
 
           <validation-provider
             #default="{ errors }"
@@ -187,6 +167,27 @@
             </b-form-group>
             <small class="text-danger">{{ errors[0] }}</small>
           </validation-provider>
+
+        </b-col>
+        <b-col md="6">
+          <label for="textarea-default">Deskripsi</label>
+          <b-form-textarea
+            id="textarea-default"
+            v-model="Deskripsi"
+            placeholder="Textarea"
+            rows="3"
+          />
+
+          <label
+            for="textarea-default"
+            class="mt-2"
+          >Catatan</label>
+          <b-form-textarea
+            id="textarea-default"
+            v-model="Catatan"
+            placeholder="Textarea"
+            rows="3"
+          />
 
           <b-form-group
             label="Keputusan"
@@ -310,9 +311,9 @@ export default {
       selectedKeputusan: { value: '2', text: 'Ketua 1' },
       selectedViewers: [],
       optionsDeadline: [
-        { value: 'OneDay', text: 'One Day' },
-        { value: 'TwoDay', text: 'Two Day' },
-        { value: 'ThreeDay', text: 'Three Day' },
+        { value: 'OneDay', text: 'Satu Hari' },
+        { value: 'TwoDay', text: 'Dua Hari' },
+        { value: 'ThreeDay', text: 'Tiga Hari' },
       ],
       optionsKategori: [
         { value: '', text: 'Pilih Kategori' },

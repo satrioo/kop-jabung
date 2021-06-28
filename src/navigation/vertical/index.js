@@ -5,6 +5,10 @@ export default [
     icon: 'CheckSquareIcon',
     children: [
       {
+        title: 'Tambah Disposisi',
+        route: 'tambah-disposisi',
+      },
+      {
         title: 'Proses Disposisi',
         route: 'proses-disposisi',
       },
