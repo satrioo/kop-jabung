@@ -313,7 +313,7 @@ export default {
       optionsDeadline: [
         { value: 'OneDay', text: 'Satu Hari' },
         { value: 'TwoDay', text: 'Dua Hari' },
-        { value: 'ThreeDay', text: 'Tiga Hari' },
+        { value: 'ThreeDay', text: 'Tiga hari' },
       ],
       optionsKategori: [
         { value: '', text: 'Pilih Kategori' },
@@ -410,6 +410,8 @@ export default {
         {
           headers:
         { token: localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName) },
+          params:
+        { viewers: 1 },
         })
 
       this.options = data.map(e => ({ value: e.id, text: e.name }))
