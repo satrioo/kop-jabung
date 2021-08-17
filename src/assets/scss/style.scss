@@ -40,3 +40,33 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
     }
   }
 }
+
+@media screen and (max-width: 1366px) {
+  .navigation {
+    font-size: 12px;
+  }
+
+  .card .card-title {
+    font-size: 14px;
+  }  
+
+  label, .form-control, .custom-select,body , .btn {
+    font-size: 12px;
+  }
+
+  .tanggapan h2{
+    font-size: 12px !important;
+  }
+  h2{
+    font-size: 16px;
+  }
+
+  .breadcrumbs-top{
+    div{
+      align-items: center;
+      display: flex;
+    }
+  }
+
+  
+}

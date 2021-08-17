@@ -145,38 +145,46 @@
           <b-form-group
             label="Isi surat"
           >
-            <quill-editor
-              v-model="original_letter"
-              disabled
-              :options="snowOption"
-              style="height: 250px"
-            />
+            <div
+              v-for="item in file"
+              :key="item.id"
+              class="fileSurat"
+            >
+              <div
+                class="open-file"
+                @click="openFile(item.url)"
+              >
+                <feather-icon
+                  icon="FileIcon"
+                  size="56"
+                />
+                <h5 class="ml-1">
+                  Open File
+                  <span> {{ item.fullname }} </span>
+                </h5>
+              </div>
+            </div>
+
           </b-form-group>
         </b-col>
       </b-row>
-
-      <!-- <b-button
-        variant="outline-primary"
-        class="bg-gradient-primary "
-        type="submit"
-        @click.prevent="validationForm"
-      >
-        <span class="align-middle">Simpan</span>
-      </b-button> -->
-
     </b-card-code>
 
     <b-card-code
       title="Validasi Surat Masuk"
     >
       <b-form-group
-        class="mb-5"
+        class="mb-2"
       >
-        <quill-editor
-          v-model="validated_letter"
-          :options="snowOption"
-          style="height: 250px"
-          :disabled="$route.name === 'detail-suratkeluar'"
+        <b-form-file
+          id="FileSurat"
+          ref="file"
+          v-model="file"
+          type="file"
+          placeholder="Input File Surat"
+          drop-placeholder="Drop file here..."
+          multiple="multiple"
+          @change="fileChange"
         />
       </b-form-group>
     </b-card-code>
