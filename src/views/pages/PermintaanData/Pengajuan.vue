@@ -245,7 +245,6 @@ export default {
           window.location.href = `detail-disposisi/${response.data.data.id}`
         })
         .catch(error => {
-          console.log(error.response)
           this.$toast({
             component: ToastificationContent,
             props: {
